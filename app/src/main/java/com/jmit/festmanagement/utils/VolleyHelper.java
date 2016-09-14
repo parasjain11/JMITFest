@@ -26,6 +26,8 @@ public class VolleyHelper {
         //Disable the onclick event of the view element
 
 
+
+
         final VolleyInterface vi = (VolleyInterface) ctx;
 
         vi.requestStarted(request_code);
