@@ -18,40 +18,43 @@ import java.util.List;
 /**
  * Created by lively on 12/9/16.
  */
-public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHolder>
-{
+public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHolder> {
 
     private List<DrawerItem> headerList;
     private DrawerChildAdapter listAdapter;
     private Context context;
 
-    public DrawerAdapter(List<DrawerItem> headersList, Context context)
-    {
-        this.context=context;
+    public DrawerAdapter(List<DrawerItem> headersList, Context context) {
+        this.context = context;
         this.headerList = headersList;
     }
+
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_row,null);
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_row, null);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position)
-    {
-        holder.headerText.setText(headerList.get(position).getTitle());
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        final DrawerItem drawerItem = headerList.get(position);
+        holder.headerText.setText(drawerItem.getTitle());
         holder.row_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.childListrecview);
-                RecyclerView.LayoutManager manager = new LinearLayoutManager(context);
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                if (!drawerItem.isExpanded()) {
+                    RecyclerView.LayoutManager manager = new LinearLayoutManager(context);
+                    holder.recyclerView.setLayoutManager(manager);
+                    holder.recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-                listAdapter = new DrawerChildAdapter(Arrays.asList(headerList.get(position).getChild()),context);
+                    listAdapter = new DrawerChildAdapter(Arrays.asList(headerList.get(position).getChild()), context);
 
-                recyclerView.setAdapter(listAdapter);
+                    holder.recyclerView.setAdapter(listAdapter);
+                    holder.recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    holder.recyclerView.setVisibility(View.GONE);
+                }
+                drawerItem.setExpanded(!drawerItem.isExpanded());
             }
         });
     }
@@ -61,15 +64,16 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHold
         return headerList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView headerText;
         private View row_view;
-        public MyViewHolder(View itemView)
-        {
+        RecyclerView recyclerView;
+
+        public MyViewHolder(View itemView) {
             super(itemView);
-            row_view=itemView;
-            headerText = (TextView)itemView.findViewById(R.id.headerItems);
+            row_view = itemView;
+            recyclerView = (RecyclerView) itemView.findViewById(R.id.childListrecview);
+            headerText = (TextView) itemView.findViewById(R.id.headerItems);
         }
     }
 }

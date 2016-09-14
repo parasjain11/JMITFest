@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/childList"
-        android:paddingLeft="40dp"
+        android:layout_marginLeft="40dp"
         android:fontFamily="sans-serif-medium"
         android:textSize="16dp"/>
 
