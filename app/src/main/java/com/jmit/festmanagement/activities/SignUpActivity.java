@@ -64,11 +64,19 @@ public class SignUpActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                startActivity(new Intent(this,Home.class));
+                startActivity(new Intent(this,StudentLogin.class));
                 finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this,StudentLogin.class));
+        finish();
+
     }
 
     @Override
