@@ -21,6 +21,7 @@ public class Home extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(),StudentLogin.class);
                 startActivity(i);
+                finish();
             }
         });
         admin.setOnClickListener(new View.OnClickListener() {
@@ -28,6 +29,7 @@ public class Home extends AppCompatActivity {
             public void onClick(View v) {
                 Intent j = new Intent(getApplicationContext(),AdminLogin.class);
                 startActivity(j);
+                finish();
             }
         });
 

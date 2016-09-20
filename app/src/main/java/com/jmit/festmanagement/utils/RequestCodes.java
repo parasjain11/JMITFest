@@ -5,7 +5,9 @@ package com.jmit.festmanagement.utils;
  */
 
 public class RequestCodes {
-    public static final int LOGIN_REQ=1;
-    public static final int CHECK_LOGIN=4;
-    public static final int LOGOUT=5;
+    public static final int LOGIN=1;
+    public static final int ADMIN_LOGIN=2;
+    public static final int SIGN_UP=3;
+
+
 }

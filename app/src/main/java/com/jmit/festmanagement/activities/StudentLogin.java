@@ -13,9 +13,13 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.jmit.festmanagement.R;
+import com.jmit.festmanagement.utils.RequestCodes;
 import com.jmit.festmanagement.utils.URL_API;
 import com.jmit.festmanagement.utils.Utils;
 import com.jmit.festmanagement.utils.VolleyHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -36,7 +40,7 @@ public class StudentLogin extends BaseActivity{
                 HashMap<String,String> hashMap=new HashMap<String, String>();
                 hashMap.put("roll_no",Rollno.getText().toString());
                 hashMap.put("device_id", Utils.getdeviceId(StudentLogin.this));
-                VolleyHelper.postRequestVolley(StudentLogin.this, URL_API.LOGIN_API,hashMap,1);
+                VolleyHelper.postRequestVolley(StudentLogin.this, URL_API.LOGIN_API,hashMap, RequestCodes.LOGIN);
             }
         });
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +55,17 @@ public class StudentLogin extends BaseActivity{
     @Override
     public void requestCompleted(int requestCode, String response) {
         super.requestCompleted(requestCode,response);
-        Toast.makeText(this,response,Toast.LENGTH_SHORT).show();
+        try {
+            JSONObject jsonObject=new JSONObject(response);
+            int i=jsonObject.getInt("success");
+            if(i==1){
+                Toast.makeText(this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this,StudentLogin.class));
+                finish();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
