@@ -20,6 +20,8 @@
         <activity android:name=".activities.AdminLogin"/>
         <activity android:name=".activities.MainActivity"/>
         <activity android:name=".activities.StudentLogin"/>
+        <activity android:name=".activities.SignUpActivity"/>
+
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.jmit.festmanagement.Main;
@@ -24,8 +25,6 @@ public class VolleyHelper {
         if (ctx == null)
             return;
         //Disable the onclick event of the view element
-
-
 
 
         final VolleyInterface vi = (VolleyInterface) ctx;
@@ -59,8 +58,23 @@ public class VolleyHelper {
                 return params;
             }
         };
+        RetryPolicy retryPolicy=new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 20000;
+            }
 
+            @Override
+            public int getCurrentRetryCount() {
+                return 1;
+            }
 
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        };
+        sr.setRetryPolicy(retryPolicy);
         Main.getInstance().add(sr);
     }
 
