@@ -16,11 +16,10 @@ import com.jmit.festmanagement.R;
 import com.jmit.festmanagement.utils.URL_API;
 import com.jmit.festmanagement.utils.Utils;
 import com.jmit.festmanagement.utils.VolleyHelper;
-import com.jmit.festmanagement.utils.VolleyInterface;
 
 import java.util.HashMap;
 
-public class StudentLogin extends AppCompatActivity implements VolleyInterface{
+public class StudentLogin extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,17 +49,13 @@ public class StudentLogin extends AppCompatActivity implements VolleyInterface{
     }
 
     @Override
-    public void requestStarted(int requestCode) {
-        Toast.makeText(this,"request started",Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void requestCompleted(int requestCode, String response) {
+        super.requestCompleted(requestCode,response);
         Toast.makeText(this,response,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {
-        Toast.makeText(this,error.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+        super.requestEndedWithError(requestCode,error);
     }
 }

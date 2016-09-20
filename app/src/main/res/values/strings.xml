@@ -3,6 +3,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="network_error">No Network Connection Available.Please Check Your Internet Connection.</string>
 
     <string name="hint_roll">Roll No</string>
     <string name="hint_password">Password</string>
