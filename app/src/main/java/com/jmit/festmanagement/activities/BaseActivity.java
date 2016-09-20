@@ -1,9 +1,7 @@
 package com.jmit.festmanagement.activities;
 
-import android.os.Handler;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -14,32 +12,30 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.jmit.festmanagement.R;
-import com.jmit.festmanagement.utils.CustomDialog;
+import com.jmit.festmanagement.utils.CustomDialogFragment;
 import com.jmit.festmanagement.utils.FLog;
 import com.jmit.festmanagement.utils.VolleyInterface;
 
 public class BaseActivity extends AppCompatActivity implements VolleyInterface {
     boolean showing = false;
-    CustomDialog alertDialog;
+    CustomDialogFragment alertDialog;
 
     void showDialog() {
         showing = true;
         if (alertDialog == null) {
-            alertDialog = new CustomDialog(this);
-            alertDialog.setView(getLayoutInflater().inflate(R.layout.progressbar, null));
+            alertDialog = new CustomDialogFragment();
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (showing)
-                    alertDialog.show();
-            }
-        }, 150);
+
+        if (showing)
+        {
+            FragmentManager fm = getSupportFragmentManager();
+            alertDialog.show(fm, "fragment_edit_name");
+        }
     }
 
     void dismissDialog() {
         showing = false;
-        if (alertDialog != null && alertDialog.isShowing())
+        if (alertDialog!=null && alertDialog.isInLayout())
             alertDialog.dismiss();
     }
 

@@ -3,6 +3,7 @@ package com.jmit.festmanagement.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +25,15 @@ import java.util.HashMap;
 public class SignUpActivity extends BaseActivity {
     EditText rollno, name, department, phoneno, email, cemail;
     Button signup;
-
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        toolbar=(Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         rollno = (EditText) findViewById(R.id.roll);
         name = (EditText) findViewById(R.id.fName);
         department = (EditText) findViewById(R.id.department);
@@ -53,6 +58,17 @@ public class SignUpActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                startActivity(new Intent(this,Home.class));
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

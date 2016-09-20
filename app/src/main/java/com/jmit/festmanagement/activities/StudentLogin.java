@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.jmit.festmanagement.Main;
 import com.jmit.festmanagement.R;
 import com.jmit.festmanagement.utils.RequestCodes;
 import com.jmit.festmanagement.utils.URL_API;
@@ -56,11 +57,12 @@ public class StudentLogin extends BaseActivity{
     public void requestCompleted(int requestCode, String response) {
         super.requestCompleted(requestCode,response);
         try {
+            response=response.substring(response.indexOf("{"),response.lastIndexOf("}")+1);
             JSONObject jsonObject=new JSONObject(response);
             int i=jsonObject.getInt("success");
             if(i==1){
-                Toast.makeText(this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this,StudentLogin.class));
+                Toast.makeText(this,"Logged in",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this,MainActivity.class));
                 finish();
             }
         } catch (JSONException e) {
