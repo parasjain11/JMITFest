@@ -10,23 +10,31 @@ import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.jmit.festmanagement.data.DrawerItem;
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jmit.festmanagement.R;
 import com.jmit.festmanagement.adapters.DrawerAdapter;
+import com.jmit.festmanagement.data.Fest;
+import com.jmit.festmanagement.utils.RequestCodes;
+import com.jmit.festmanagement.utils.URL_API;
+import com.jmit.festmanagement.utils.VolleyHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements  View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private RecyclerView recyclerView;
-    private List<DrawerItem> headerList;
+    private ArrayList<Fest> headerList;
     private DrawerAdapter customAdapter;
 
 
@@ -37,12 +45,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerview);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         headerList = new ArrayList<>();
-        headerList.add(new DrawerItem("Blah",new String[] {"qwerty","qwerty"}));
-        headerList.add(new DrawerItem("thaaann", new String[] {"qwerty","qwerty"}));
-
-        customAdapter = new DrawerAdapter(headerList,getApplicationContext());
+        customAdapter = new DrawerAdapter(headerList, getApplicationContext());
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -51,15 +56,17 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, "", Snackbar.LENGTH_LONG).setAction("", null).show();
             }
         });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        if(savedInstanceState==null)
+        VolleyHelper.postRequestVolley(this, URL_API.FESTS, new HashMap<String, String>(), RequestCodes.FESTS);
+        else
+            headerList=savedInstanceState.getParcelableArrayList("headerList");
 
     }
 
@@ -70,6 +77,36 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("headerList",headerList);
+    }
+
+    @Override
+    public void requestStarted(int requestCode) {
+        super.requestStarted(requestCode);
+    }
+
+    @Override
+    public void requestEndedWithError(int requestCode, VolleyError error) {
+        super.requestEndedWithError(requestCode, error);
+    }
+
+    @Override
+    public void requestCompleted(int requestCode, String response) {
+        super.requestCompleted(requestCode, response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            headerList = new Gson().fromJson(jsonObject.get("fests").toString(), new TypeToken<ArrayList<Fest>>() {
+            }.getType());
+            customAdapter.setHeaderList(headerList);
+            customAdapter.notifyDataSetChanged();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

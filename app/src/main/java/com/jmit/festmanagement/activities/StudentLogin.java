@@ -85,6 +85,7 @@ public class StudentLogin extends BaseActivity{
     @Override
     public void requestCompleted(int requestCode, String response) {
         super.requestCompleted(requestCode,response);
+        dismissDialog();
         try {
             response=response.substring(response.indexOf("{"),response.lastIndexOf("}")+1);
             JSONObject jsonObject=new JSONObject(response);
@@ -98,9 +99,16 @@ public class StudentLogin extends BaseActivity{
             e.printStackTrace();
         }
     }
+    @Override
+    public void requestStarted(int requestCode) {
+        super.requestStarted(requestCode);
+        showDialog();
+    }
 
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {
-        super.requestEndedWithError(requestCode,error);
+        super.requestEndedWithError(requestCode, error);
+        dismissDialog();
     }
-}
+
+    }

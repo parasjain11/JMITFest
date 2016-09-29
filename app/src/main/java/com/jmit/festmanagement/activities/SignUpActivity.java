@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.google.gson.JsonObject;
 import com.jmit.festmanagement.R;
 import com.jmit.festmanagement.utils.RequestCodes;
@@ -80,8 +81,21 @@ public class SignUpActivity extends BaseActivity {
     }
 
     @Override
+    public void requestStarted(int requestCode) {
+        super.requestStarted(requestCode);
+        showDialog();
+    }
+
+    @Override
+    public void requestEndedWithError(int requestCode, VolleyError error) {
+        super.requestEndedWithError(requestCode, error);
+        dismissDialog();
+    }
+
+    @Override
     public void requestCompleted(int requestCode, String response) {
         super.requestCompleted(requestCode, response);
+        dismissDialog();
         try {
             JSONObject jsonObject=new JSONObject(response);
             int i=jsonObject.getInt("success");

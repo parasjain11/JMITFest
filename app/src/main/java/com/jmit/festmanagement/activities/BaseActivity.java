@@ -35,24 +35,21 @@ public class BaseActivity extends AppCompatActivity implements VolleyInterface {
 
     void dismissDialog() {
         showing = false;
-        if (alertDialog!=null && alertDialog.isInLayout())
+        if (alertDialog!=null && alertDialog.isVisible())
             alertDialog.dismiss();
     }
 
     @Override
     public void requestStarted(int requestCode) {
-        showDialog();
     }
 
     @Override
     public void requestCompleted(int requestCode, String response) {
-        dismissDialog();
         FLog.d(response);
     }
 
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {
-        dismissDialog();
         FLog.d(error.getMessage());
         String msg = "";
         if (error instanceof TimeoutError || error instanceof NoConnectionError || error instanceof NetworkError) {

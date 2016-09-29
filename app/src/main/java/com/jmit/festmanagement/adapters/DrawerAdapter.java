@@ -1,18 +1,16 @@
 package com.jmit.festmanagement.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jmit.festmanagement.data.DrawerItem;
 import com.jmit.festmanagement.R;
+import com.jmit.festmanagement.data.Fest;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,13 +18,16 @@ import java.util.List;
  */
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHolder> {
 
-    private List<DrawerItem> headerList;
-    private DrawerChildAdapter listAdapter;
+    private List<Fest> headerList;
     private Context context;
 
-    public DrawerAdapter(List<DrawerItem> headersList, Context context) {
+    public DrawerAdapter(List<Fest> headersList, Context context) {
         this.context = context;
         this.headerList = headersList;
+    }
+
+    public void setHeaderList(List<Fest> headerList) {
+        this.headerList = headerList;
     }
 
     @Override
@@ -37,22 +38,15 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        final DrawerItem drawerItem = headerList.get(position);
-        holder.headerText.setText(drawerItem.getTitle());
+        final Fest drawerItem = headerList.get(position);
+        holder.headerText.setText(drawerItem.getFestName());
         holder.row_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!drawerItem.isExpanded()) {
-                    RecyclerView.LayoutManager manager = new LinearLayoutManager(context);
-                    holder.recyclerView.setLayoutManager(manager);
-                    holder.recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-                    listAdapter = new DrawerChildAdapter(Arrays.asList(headerList.get(position).getChild()), context);
-
-                    holder.recyclerView.setAdapter(listAdapter);
-                    holder.recyclerView.setVisibility(View.VISIBLE);
+                    holder.expandedView.setVisibility(View.VISIBLE);
                 } else {
-                    holder.recyclerView.setVisibility(View.GONE);
+                    holder.expandedView.setVisibility(View.GONE);
                 }
                 drawerItem.setExpanded(!drawerItem.isExpanded());
             }
@@ -67,12 +61,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView headerText;
         private View row_view;
-        RecyclerView recyclerView;
+        LinearLayout expandedView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             row_view = itemView;
-            recyclerView = (RecyclerView) itemView.findViewById(R.id.childListrecview);
+            expandedView = (LinearLayout) itemView.findViewById(R.id.childListrecview);
             headerText = (TextView) itemView.findViewById(R.id.headerItems);
         }
     }
