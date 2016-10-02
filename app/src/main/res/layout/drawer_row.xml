@@ -1,44 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:layout_height="42dp"
+    android:foreground="@drawable/ripple_normal"
     android:layout_width="match_parent"
-    android:layout_height="24dp"
-    android:orientation="vertical">
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:id="@+id/icon"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:src="@drawable/ic_event_black_24dp" />
 
     <TextView
+        android:layout_toRightOf="@+id/icon"
         android:id="@+id/headerItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:fontFamily="sans-serif-medium"
-        android:foreground="@drawable/ripple_normal"
+        android:paddingLeft="16dp"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
-    <LinearLayout
-        android:id="@+id/childListrecview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:clickable="false"
-        android:orientation="vertical">
-
-        <TextView
-            android:text="View Details"
-            android:fontFamily="sans-serif-medium"
-            android:clickable="true"
-            android:foreground="@drawable/ripple_normal"
-            android:textColor="#7f000000"
-            android:layout_width="match_parent"
-            android:paddingLeft="12dp"
-            android:layout_height="24dp" />
-
-        <TextView
-            android:clickable="true"
-            android:text="Register"
-            android:fontFamily="sans-serif-medium"
-            android:foreground="@drawable/ripple_normal"
-            android:textColor="#7f000000"
-            android:layout_width="match_parent"
-            android:paddingLeft="12dp"
-            android:layout_height="24dp" />
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

@@ -3,6 +3,7 @@ package com.jmit.festmanagement.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.jmit.festmanagement.R;
 import com.jmit.festmanagement.adapters.DrawerAdapter;
 import com.jmit.festmanagement.data.Fest;
+import com.jmit.festmanagement.utils.EmptyRecyclerView;
 import com.jmit.festmanagement.utils.RequestCodes;
 import com.jmit.festmanagement.utils.URL_API;
 import com.jmit.festmanagement.utils.VolleyHelper;
@@ -31,9 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener,DrawerAdapter.OnItemClickListener {
 
-    private RecyclerView recyclerView;
+    private EmptyRecyclerView recyclerView;
     private ArrayList<Fest> headerList;
     private DrawerAdapter customAdapter;
 
@@ -44,30 +46,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        headerList = new ArrayList<>();
-        customAdapter = new DrawerAdapter(headerList, getApplicationContext());
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        headerList=new ArrayList<>();
+        recyclerView = (EmptyRecyclerView) findViewById(R.id.recyclerview);
+        recyclerView.setEmptyView((ContentLoadingProgressBar)findViewById(R.id.progressBar),findViewById(R.id.nodata));
+        if(savedInstanceState==null)
+            VolleyHelper.postRequestVolley(this, URL_API.FESTS, new HashMap<String, String>(), RequestCodes.FESTS);
+        else
+            headerList=savedInstanceState.getParcelableArrayList("headerList");
+        LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
+        customAdapter = new DrawerAdapter(headerList, getApplicationContext());
+        customAdapter.setOnItemClickListener(this);
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(customAdapter);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "", Snackbar.LENGTH_LONG).setAction("", null).show();
-            }
-        });
+        recyclerView.checkIfEmpty();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        if(savedInstanceState==null)
-        VolleyHelper.postRequestVolley(this, URL_API.FESTS, new HashMap<String, String>(), RequestCodes.FESTS);
-        else
-            headerList=savedInstanceState.getParcelableArrayList("headerList");
-
     }
 
     @Override
@@ -89,11 +86,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void requestStarted(int requestCode) {
         super.requestStarted(requestCode);
+        if(requestCode==RequestCodes.FESTS)
+            recyclerView.setTaskRunning(true);
     }
 
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {
         super.requestEndedWithError(requestCode, error);
+        if(requestCode==RequestCodes.FESTS)
+            recyclerView.setTaskRunning(false);
     }
 
     @Override
@@ -108,6 +109,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        if(requestCode==RequestCodes.FESTS)
+            recyclerView.setTaskRunning(false);
     }
 
     @Override
@@ -135,6 +138,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onDrawerItemClick(int item) {
 
     }
 }

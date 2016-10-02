@@ -20,7 +20,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHold
 
     private List<Fest> headerList;
     private Context context;
-
+    OnItemClickListener onItemClickListener;
     public DrawerAdapter(List<Fest> headersList, Context context) {
         this.context = context;
         this.headerList = headersList;
@@ -35,6 +35,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHold
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_row, null);
         return new MyViewHolder(view);
     }
+    public interface OnItemClickListener{
+        void onDrawerItemClick(int item);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
@@ -43,12 +50,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHold
         holder.row_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!drawerItem.isExpanded()) {
-                    holder.expandedView.setVisibility(View.VISIBLE);
-                } else {
-                    holder.expandedView.setVisibility(View.GONE);
-                }
-                drawerItem.setExpanded(!drawerItem.isExpanded());
+                if(onItemClickListener!=null)
+                    onItemClickListener.onDrawerItemClick(position);
             }
         });
     }
@@ -61,12 +64,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView headerText;
         private View row_view;
-        LinearLayout expandedView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             row_view = itemView;
-            expandedView = (LinearLayout) itemView.findViewById(R.id.childListrecview);
             headerText = (TextView) itemView.findViewById(R.id.headerItems);
         }
     }
