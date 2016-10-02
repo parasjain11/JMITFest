@@ -11,5 +11,6 @@ public class URL_API {
     public static final String ADMIN_LOGIN=baseUrl+"/admin_login.php";
     public static final String FESTS=baseUrl+"/get_fests.php";
 
+    public static final String EVENTS=baseUrl+"/get_events.php";
     public static final String SIGN_UP=baseUrl+"/create_user.php";
 }

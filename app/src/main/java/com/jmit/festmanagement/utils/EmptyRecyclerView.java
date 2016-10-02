@@ -81,6 +81,7 @@ public class EmptyRecyclerView extends RecyclerView {
     public void setTaskRunning(boolean taskRunning) {
         this.taskRunning = taskRunning;
         checkIfEmpty();
+        System.out.println("running"+taskRunning);
     }
 
     void setEmptyMode(){

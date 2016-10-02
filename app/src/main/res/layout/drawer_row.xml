@@ -19,7 +19,6 @@
         android:id="@+id/headerItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:fontFamily="sans-serif-medium"
         android:paddingLeft="16dp"
         android:textColor="@android:color/black"

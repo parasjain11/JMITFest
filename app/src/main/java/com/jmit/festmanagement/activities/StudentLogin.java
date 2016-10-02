@@ -2,6 +2,7 @@ package com.jmit.festmanagement.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 
 public class StudentLogin extends BaseActivity{
     Toolbar toolbar;
+    String uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +52,9 @@ public class StudentLogin extends BaseActivity{
                     Toast.makeText(getApplicationContext(), "Fill All The Details", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                uid=Rollno.getText().toString();
                 HashMap<String,String> hashMap=new HashMap<String, String>();
-                hashMap.put("roll_no",Rollno.getText().toString());
+                hashMap.put("roll_no",uid);
                 hashMap.put("device_id", Utils.getdeviceId(StudentLogin.this));
                 VolleyHelper.postRequestVolley(StudentLogin.this, URL_API.LOGIN_API,hashMap, RequestCodes.LOGIN);
             }
@@ -92,6 +95,7 @@ public class StudentLogin extends BaseActivity{
             int i=jsonObject.getInt("success");
             if(i==1){
                 Toast.makeText(this,"Logged in",Toast.LENGTH_SHORT).show();
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("uid",uid).commit();
                 startActivity(new Intent(this,MainActivity.class));
                 finish();
             }

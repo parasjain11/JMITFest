@@ -36,7 +36,7 @@ public class BaseActivity extends AppCompatActivity implements VolleyInterface {
     void dismissDialog() {
         showing = false;
         if (alertDialog!=null && alertDialog.isVisible())
-            alertDialog.dismiss();
+            alertDialog.dismissAllowingStateLoss();
     }
 
     @Override
