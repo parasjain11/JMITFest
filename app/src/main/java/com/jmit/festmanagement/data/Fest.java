@@ -56,8 +56,9 @@ public class Fest implements Parcelable {
      * @param festId
      * The fest_id
      */
-    public void setFestId(String festId) {
+    public Fest setFestId(String festId) {
         this.festId = festId;
+        return this;
     }
 
     public boolean isExpanded() {
@@ -92,6 +93,17 @@ public class Fest implements Parcelable {
      */
     public String getFestDesc() {
         return festDesc;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Fest fest = (Fest) o;
+
+        return festId != null ? festId.equals(fest.festId) : fest.festId == null;
+
     }
 
     /**

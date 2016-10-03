@@ -91,6 +91,7 @@ public class EmptyRecyclerView extends RecyclerView {
     }
     void setProgressMode(){
         progressView.show();
+        progressView.setVisibility(VISIBLE);
         emptyView.setVisibility(GONE);
         setVisibility(GONE);
     }

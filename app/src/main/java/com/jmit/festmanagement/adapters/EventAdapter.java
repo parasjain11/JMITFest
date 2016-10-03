@@ -33,7 +33,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_row, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_row, null);
         return new MyViewHolder(view);
     }
     public interface OnItemClickListener{
@@ -47,7 +47,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Event drawerItem = headerList.get(position);
-       // holder.headerText.setText(drawerItem.getFestName());
+        holder.title.setText(drawerItem.getEventName());
+        holder.desc.setText(drawerItem.getEventDesc());
+        holder.venue.setText(drawerItem.getVenue());
+        holder.date.setText(drawerItem.getStartDate()+" to "+drawerItem.getEndDate());
         holder.row_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,13 +66,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView headerText;
+        private TextView title,desc,venue,date;
         private View row_view;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             row_view = itemView;
-            headerText = (TextView) itemView.findViewById(R.id.headerItems);
-        }
+            title = (TextView) itemView.findViewById(R.id.title);
+            desc = (TextView) itemView.findViewById(R.id.desc);
+            venue=(TextView)itemView.findViewById(R.id.venue);
+            date=(TextView)itemView.findViewById(R.id.date);
+            }
     }
 }

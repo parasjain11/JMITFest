@@ -43,6 +43,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
     private DrawerAdapter customAdapter;
     EventAdapter eventAdapter;
     DrawerLayout drawer;
+    String title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +51,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
         intialiseViews();
         headerList=new ArrayList<>();
         currentEventList=new ArrayList<>();
+        title=getResources().getString(R.string.app_name);
         if(savedInstanceState==null)
             VolleyHelper.postRequestVolley(this, URL_API.FESTS, new HashMap<String, String>(), RequestCodes.FESTS);
-        else
+        else{
             headerList=savedInstanceState.getParcelableArrayList("headerList");
+            currentEventList=savedInstanceState.getParcelableArrayList("eventList");
+            title=savedInstanceState.getString("title");
+        }
+        getSupportActionBar().setTitle(title);
         initialiseLists();
     }
 
@@ -70,6 +76,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("headerList",headerList);
+        outState.putParcelableArrayList("eventList",currentEventList);
+        outState.putString("title",title);
     }
 
     @Override
@@ -94,15 +102,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
     @Override
     public void requestCompleted(int requestCode, String response) {
         super.requestCompleted(requestCode, response);
-        if(requestCode==RequestCodes.FESTS)
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            headerList = new Gson().fromJson(jsonObject.get("fests").toString(), new TypeToken<ArrayList<Fest>>() {
-            }.getType());
-            customAdapter.setHeaderList(headerList);
-            customAdapter.notifyDataSetChanged();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(requestCode==RequestCodes.FESTS){
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                headerList = new Gson().fromJson(jsonObject.get("fests").toString(), new TypeToken<ArrayList<Fest>>() {
+                }.getType());
+                customAdapter.setHeaderList(headerList);
+                customAdapter.notifyDataSetChanged();
+                drawerRecycler.checkIfEmpty();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else if(requestCode==RequestCodes.EVENTS){
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(response);
+                currentEventList = new Gson().fromJson(jsonObject.get("events").toString(), new TypeToken<ArrayList<Event>>() {
+                }.getType());
+                eventAdapter.setHeaderList(currentEventList);
+                eventAdapter.notifyDataSetChanged();
+                eventRecycler.checkIfEmpty();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         if(requestCode==RequestCodes.FESTS)
             drawerRecycler.setTaskRunning(false);
@@ -142,7 +164,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
     public void onDrawerItemClick(int item) {
         HashMap<String,String> hashMap=new HashMap<>();
         hashMap.put("fest_id",headerList.get(item).getFestId());
-        VolleyHelper.postRequestVolley(this, URL_API.EVENTS, new HashMap<String, String>(), RequestCodes.EVENTS);
+        getSupportActionBar().setTitle(headerList.get(item).getFestName());
+        title=headerList.get(item).getFestName();
+        VolleyHelper.postRequestVolley(this, URL_API.EVENTS, hashMap, RequestCodes.EVENTS);
+        if(drawer!=null)
+            drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
