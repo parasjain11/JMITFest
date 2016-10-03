@@ -1,10 +1,12 @@
 package com.jmit.festmanagement.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.jmit.festmanagement.R;
@@ -37,7 +39,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         return new MyViewHolder(view);
     }
     public interface OnItemClickListener{
-        void onEventItemClick(int item);
+        void onEventItemClick(Event event);
+        void onRegisterClick(Event event);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -55,7 +58,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
                 if(onItemClickListener!=null)
-                    onItemClickListener.onEventItemClick(position);
+                    onItemClickListener.onEventItemClick(headerList.get(position));
+            }
+        });
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onItemClickListener!=null)
+                    onItemClickListener.onRegisterClick(headerList.get(position));
             }
         });
     }
@@ -68,7 +78,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView title,desc,venue,date;
         private View row_view;
-
+        AppCompatButton button;
         public MyViewHolder(View itemView) {
             super(itemView);
             row_view = itemView;
@@ -76,6 +86,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
             desc = (TextView) itemView.findViewById(R.id.desc);
             venue=(TextView)itemView.findViewById(R.id.venue);
             date=(TextView)itemView.findViewById(R.id.date);
+            button=(AppCompatButton)itemView.findViewById(R.id.register);
             }
     }
 }

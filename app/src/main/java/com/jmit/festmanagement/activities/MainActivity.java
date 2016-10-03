@@ -1,6 +1,7 @@
 package com.jmit.festmanagement.activities;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -35,29 +36,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener,DrawerAdapter.OnItemClickListener, EventAdapter.OnItemClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, DrawerAdapter.OnItemClickListener, EventAdapter.OnItemClickListener {
 
-    private EmptyRecyclerView drawerRecycler,eventRecycler;
+    private EmptyRecyclerView drawerRecycler, eventRecycler;
     private ArrayList<Fest> headerList;
     ArrayList<Event> currentEventList;
     private DrawerAdapter customAdapter;
     EventAdapter eventAdapter;
     DrawerLayout drawer;
     String title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         intialiseViews();
-        headerList=new ArrayList<>();
-        currentEventList=new ArrayList<>();
-        title=getResources().getString(R.string.app_name);
-        if(savedInstanceState==null)
+        headerList = new ArrayList<>();
+        currentEventList = new ArrayList<>();
+        title = getResources().getString(R.string.app_name);
+        if (savedInstanceState == null)
             VolleyHelper.postRequestVolley(this, URL_API.FESTS, new HashMap<String, String>(), RequestCodes.FESTS);
-        else{
-            headerList=savedInstanceState.getParcelableArrayList("headerList");
-            currentEventList=savedInstanceState.getParcelableArrayList("eventList");
-            title=savedInstanceState.getString("title");
+        else {
+            headerList = savedInstanceState.getParcelableArrayList("headerList");
+            currentEventList = savedInstanceState.getParcelableArrayList("eventList");
+            title = savedInstanceState.getString("title");
         }
         getSupportActionBar().setTitle(title);
         initialiseLists();
@@ -75,34 +77,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("headerList",headerList);
-        outState.putParcelableArrayList("eventList",currentEventList);
-        outState.putString("title",title);
+        outState.putParcelableArrayList("headerList", headerList);
+        outState.putParcelableArrayList("eventList", currentEventList);
+        outState.putString("title", title);
     }
 
     @Override
     public void requestStarted(int requestCode) {
         super.requestStarted(requestCode);
-        if(requestCode==RequestCodes.FESTS)
-            drawerRecycler.setTaskRunning(true);
-        if(requestCode==RequestCodes.EVENTS)
-            eventRecycler.setTaskRunning(true);
 
+        if (requestCode == RequestCodes.FESTS) {
+            drawerRecycler.setTaskRunning(true);
+        } else if (requestCode == RequestCodes.EVENTS) {
+            eventRecycler.setTaskRunning(true);
+        }
+        else showDialog();
     }
 
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {
         super.requestEndedWithError(requestCode, error);
-        if(requestCode==RequestCodes.FESTS)
+
+        if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(false);
-        if(requestCode==RequestCodes.EVENTS)
+        } else if (requestCode == RequestCodes.EVENTS) {
             eventRecycler.setTaskRunning(false);
+        }
+        else dismissDialog();
     }
 
     @Override
     public void requestCompleted(int requestCode, String response) {
         super.requestCompleted(requestCode, response);
-        if(requestCode==RequestCodes.FESTS){
+        if (requestCode == RequestCodes.FESTS) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 headerList = new Gson().fromJson(jsonObject.get("fests").toString(), new TypeToken<ArrayList<Fest>>() {
@@ -113,12 +120,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else if(requestCode==RequestCodes.EVENTS){
+        } else if (requestCode == RequestCodes.EVENTS) {
             JSONObject jsonObject = null;
             try {
                 jsonObject = new JSONObject(response);
                 currentEventList = new Gson().fromJson(jsonObject.get("events").toString(), new TypeToken<ArrayList<Event>>() {
                 }.getType());
+                String fest_id = jsonObject.getString("fest_id");
+                for (Event event : currentEventList)
+                    event.setFest_id(fest_id);
                 eventAdapter.setHeaderList(currentEventList);
                 eventAdapter.notifyDataSetChanged();
                 eventRecycler.checkIfEmpty();
@@ -126,10 +136,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
                 e.printStackTrace();
             }
         }
-        if(requestCode==RequestCodes.FESTS)
+        if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(false);
-        if(requestCode==RequestCodes.EVENTS)
+        } else if (requestCode == RequestCodes.EVENTS) {
             eventRecycler.setTaskRunning(false);
+        }
+        else dismissDialog();
     }
 
     @Override
@@ -162,20 +174,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
 
     @Override
     public void onDrawerItemClick(int item) {
-        HashMap<String,String> hashMap=new HashMap<>();
-        hashMap.put("fest_id",headerList.get(item).getFestId());
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("fest_id", headerList.get(item).getFestId());
         getSupportActionBar().setTitle(headerList.get(item).getFestName());
-        title=headerList.get(item).getFestName();
+        title = headerList.get(item).getFestName();
         VolleyHelper.postRequestVolley(this, URL_API.EVENTS, hashMap, RequestCodes.EVENTS);
-        if(drawer!=null)
+        if (drawer != null)
             drawer.closeDrawer(GravityCompat.START);
     }
 
-    @Override
-    public void onEventItemClick(int item) {
-
-    }
-    void intialiseViews(){
+    void intialiseViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -184,12 +192,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         drawerRecycler = (EmptyRecyclerView) findViewById(R.id.recyclerview);
-        drawerRecycler.setEmptyView((ContentLoadingProgressBar)findViewById(R.id.progressBar),findViewById(R.id.nodata));
+        drawerRecycler.setEmptyView((ContentLoadingProgressBar) findViewById(R.id.progressBar), findViewById(R.id.nodata));
         eventRecycler = (EmptyRecyclerView) findViewById(R.id.eventRecycler);
-        eventRecycler.setEmptyView((ContentLoadingProgressBar)findViewById(R.id.event_progressBar),findViewById(R.id.event_nodata));
+        eventRecycler.setEmptyView((ContentLoadingProgressBar) findViewById(R.id.event_progressBar), findViewById(R.id.event_nodata));
 
     }
-    void initialiseLists(){
+
+    void initialiseLists() {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         drawerRecycler.setLayoutManager(manager);
         customAdapter = new DrawerAdapter(headerList, getApplicationContext());
@@ -202,6 +211,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,D
         eventAdapter.setOnItemClickListener(this);
         eventRecycler.setAdapter(eventAdapter);
         eventRecycler.checkIfEmpty();
+
+    }
+
+    @Override
+    public void onEventItemClick(Event event) {
+
+    }
+
+    @Override
+    public void onRegisterClick(Event event) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("fest_id", event.getFest_id());
+        hashMap.put("event_id", event.getEventId());
+        hashMap.put("user_id", PreferenceManager.getDefaultSharedPreferences(this).getString("uid", null));
+        VolleyHelper.postRequestVolley(this, URL_API.REGISTRATION, hashMap, RequestCodes.REGISTRATION);
 
     }
 }

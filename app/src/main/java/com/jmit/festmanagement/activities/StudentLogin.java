@@ -95,7 +95,7 @@ public class StudentLogin extends BaseActivity{
             int i=jsonObject.getInt("success");
             if(i==1){
                 Toast.makeText(this,"Logged in",Toast.LENGTH_SHORT).show();
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("uid",uid).commit();
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("uid",uid).putBoolean("isStudent",true).commit();
                 startActivity(new Intent(this,MainActivity.class));
                 finish();
             }

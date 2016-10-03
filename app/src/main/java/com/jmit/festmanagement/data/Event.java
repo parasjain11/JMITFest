@@ -35,7 +35,7 @@ public class Event implements Parcelable {
     @SerializedName("end_time")
     @Expose
     private String endTime;
-
+    transient String fest_id;
     protected Event(Parcel in) {
         eventId = in.readString();
         eventName = in.readString();
@@ -58,6 +58,14 @@ public class Event implements Parcelable {
             return new Event[size];
         }
     };
+
+    public String getFest_id() {
+        return fest_id;
+    }
+
+    public void setFest_id(String fest_id) {
+        this.fest_id = fest_id;
+    }
 
     /**
      *
