@@ -14,4 +14,5 @@ public class URL_API {
     public static final String EVENTS=baseUrl+"/get_events.php";
     public static final String REGISTRATION=baseUrl+"/registeration.php";
     public static final String SIGN_UP=baseUrl+"/create_user.php";
+    public static final String REGISTERED_EVENTS=baseUrl+"/get_registered_event.php";
 }

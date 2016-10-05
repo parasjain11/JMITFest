@@ -45,17 +45,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     EventAdapter eventAdapter;
     DrawerLayout drawer;
     String title;
-
+    String uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         intialiseViews();
+        uid=PreferenceManager.getDefaultSharedPreferences(this).getString("uid", null);
         headerList = new ArrayList<>();
         currentEventList = new ArrayList<>();
         title = getResources().getString(R.string.app_name);
-        if (savedInstanceState == null)
+        if (savedInstanceState == null){
+            HashMap<String,String>  hashMap=new HashMap<>();
+            hashMap.put("user_id",uid);
+            VolleyHelper.postRequestVolley(this, URL_API.REGISTERED_EVENTS, hashMap, 7);
             VolleyHelper.postRequestVolley(this, URL_API.FESTS, new HashMap<String, String>(), RequestCodes.FESTS);
+        }
         else {
             headerList = savedInstanceState.getParcelableArrayList("headerList");
             currentEventList = savedInstanceState.getParcelableArrayList("eventList");
@@ -224,8 +229,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("fest_id", event.getFest_id());
         hashMap.put("event_id", event.getEventId());
-        hashMap.put("user_id", PreferenceManager.getDefaultSharedPreferences(this).getString("uid", null));
+        hashMap.put("user_id", uid);
         VolleyHelper.postRequestVolley(this, URL_API.REGISTRATION, hashMap, RequestCodes.REGISTRATION);
-
     }
 }
