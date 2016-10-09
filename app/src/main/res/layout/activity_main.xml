@@ -29,6 +29,7 @@
             android:paddingLeft="16dp"
             android:foreground="@drawable/ripple_normal"
             android:paddingRight="16dp"
+            android:visibility="gone"
             android:onClick="home"
             android:paddingStart="16dp">
 
@@ -164,7 +165,7 @@
                 android:layout_marginRight="32dp"
                 android:paddingBottom="12dp"
                 android:paddingTop="12dp"
-                android:src="@drawable/logout"
+                android:src="@drawable/logout_square_button"
                 android:tint="#666"/>
 
             <TextView

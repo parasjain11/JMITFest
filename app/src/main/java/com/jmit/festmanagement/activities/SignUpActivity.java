@@ -50,7 +50,7 @@ public class SignUpActivity extends BaseActivity {
                 } else {
                     HashMap<String,String> hashMap=new HashMap<String, String>();
                     hashMap.put("roll_no",rollno.getText().toString());
-                    hashMap.put("username",name.getText().toString());
+                    hashMap.put("user_name",name.getText().toString());
                     hashMap.put("department",department.getText().toString());
                     hashMap.put("ph_no",phoneno.getText().toString());
                     hashMap.put("email",email.getText().toString());
