@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import com.jmit.festmanagement.R;
 
-public class Home extends AppCompatActivity {
+public class Home extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,17 +19,13 @@ public class Home extends AppCompatActivity {
         student.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),StudentLogin.class);
-                startActivity(i);
-                finish();
+                startActivity(StudentLogin.class);
             }
         });
         admin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent j = new Intent(getApplicationContext(),AdminLogin.class);
-                startActivity(j);
-                finish();
+                startActivity(AdminLogin.class);
             }
         });
 

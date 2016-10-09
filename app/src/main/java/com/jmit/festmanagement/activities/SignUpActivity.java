@@ -101,8 +101,7 @@ public class SignUpActivity extends BaseActivity {
             int i=jsonObject.getInt("success");
             if(i==1){
                 Toast.makeText(this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this,StudentLogin.class));
-                finish();
+                startActivity(StudentLogin.class);
             }
         } catch (Exception e) {
             e.printStackTrace();

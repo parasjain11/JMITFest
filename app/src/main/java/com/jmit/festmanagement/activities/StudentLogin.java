@@ -3,6 +3,7 @@ package com.jmit.festmanagement.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -90,7 +91,6 @@ public class StudentLogin extends BaseActivity{
         super.requestCompleted(requestCode,response);
         dismissDialog();
         try {
-            response=response.substring(response.indexOf("{"),response.lastIndexOf("}")+1);
             JSONObject jsonObject=new JSONObject(response);
             int i=jsonObject.getInt("success");
             if(i==1){
@@ -99,6 +99,7 @@ public class StudentLogin extends BaseActivity{
                 startActivity(new Intent(this,MainActivity.class));
                 finish();
             }
+            else Snackbar.make(findViewById(R.id.main_frame),jsonObject.getString("message"),Snackbar.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -55,8 +55,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     void startHome() {
-        finish();
-        startActivity(new Intent(this, Home.class));
+        startActivity((Home.class));
     }
 
 
@@ -70,8 +69,7 @@ public class SplashActivity extends BaseActivity {
             if (i == 1) {
                 Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putString("uid", uid).putBoolean("isStudent", true).commit();
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
+                startActivity( MainActivity.class);
             } else startHome();
         } catch (JSONException e) {
             e.printStackTrace();

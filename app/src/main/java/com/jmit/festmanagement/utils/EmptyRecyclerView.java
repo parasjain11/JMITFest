@@ -11,10 +11,10 @@ import android.view.View;
  */
 
 public class EmptyRecyclerView extends RecyclerView {
-    int current_mode=0;
+    int current_mode = 0;
     private View emptyView;
     ContentLoadingProgressBar progressView;
-    boolean taskRunning;
+    boolean taskRunning, refresh = false;
     final private RecyclerView.AdapterDataObserver observer = new AdapterDataObserver() {
         @Override
         public void onChanged() {
@@ -45,15 +45,19 @@ public class EmptyRecyclerView extends RecyclerView {
     }
 
     public void checkIfEmpty() {
-        if (emptyView != null && progressView!=null && getAdapter() != null) {
-           if(taskRunning){
-               setProgressMode();
-               return;
-           }else{
+        if (emptyView != null && progressView != null && getAdapter() != null) {
+            if (refresh) {
+                setDataMode();
+                return;
+            }
+            if (taskRunning) {
+                setProgressMode();
+                return;
+            } else {
                 boolean emptyViewVisible = getAdapter().getItemCount() == 0;
-                if(emptyViewVisible)setEmptyMode();
-               else setDataMode();
-           }
+                if (emptyViewVisible) setEmptyMode();
+                else setDataMode();
+            }
         }
     }
 
@@ -73,29 +77,37 @@ public class EmptyRecyclerView extends RecyclerView {
     }
 
 
-    public void setEmptyView(ContentLoadingProgressBar progressView,View emptyView) {
+    public void setEmptyView(ContentLoadingProgressBar progressView, View emptyView) {
         this.emptyView = emptyView;
-        this.progressView=progressView;
+        this.progressView = progressView;
+    }
+
+    public void setRefreshing() {
+        refresh = true;
+        checkIfEmpty();
     }
 
     public void setTaskRunning(boolean taskRunning) {
         this.taskRunning = taskRunning;
+        if (!taskRunning) refresh = false;
         checkIfEmpty();
-        System.out.println("running"+taskRunning);
+        System.out.println("running" + taskRunning);
     }
 
-    void setEmptyMode(){
+    void setEmptyMode() {
         progressView.hide();
         emptyView.setVisibility(VISIBLE);
         setVisibility(GONE);
     }
-    void setProgressMode(){
+
+    void setProgressMode() {
         progressView.show();
         progressView.setVisibility(VISIBLE);
         emptyView.setVisibility(GONE);
         setVisibility(GONE);
     }
-    void setDataMode(){
+
+    void setDataMode() {
         progressView.hide();
         emptyView.setVisibility(GONE);
         setVisibility(VISIBLE);

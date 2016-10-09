@@ -1,5 +1,6 @@
 package com.jmit.festmanagement.activities;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -38,7 +39,13 @@ public class BaseActivity extends AppCompatActivity implements VolleyInterface {
         if (alertDialog!=null && alertDialog.isVisible())
             alertDialog.dismissAllowingStateLoss();
     }
-
+    void startActivity(Class c){
+        Intent newIntent = new Intent(this, c);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(newIntent);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
     @Override
     public void requestStarted(int requestCode) {
     }

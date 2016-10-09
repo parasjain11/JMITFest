@@ -8,8 +8,8 @@ public class RequestCodes {
     public static final int LOGIN=1;
     public static final int ADMIN_LOGIN=2;
     public static final int SIGN_UP=3;
+    public static final int FESTS=4;
     public static final int EVENTS=5;
     public static final int REGISTRATION=6;
-    public static final int FESTS=4;
-
+    public static final int GET_REGISTRATION=7;
 }

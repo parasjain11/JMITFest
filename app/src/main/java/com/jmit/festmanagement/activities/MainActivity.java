@@ -1,5 +1,6 @@
 package com.jmit.festmanagement.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -41,33 +42,50 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private EmptyRecyclerView drawerRecycler, eventRecycler;
     private ArrayList<Fest> headerList;
     ArrayList<Event> currentEventList;
+    ArrayList<Event> registeredList;
     private DrawerAdapter customAdapter;
     EventAdapter eventAdapter;
     DrawerLayout drawer;
     String title;
     String uid;
+    int mode = -2;
+
+    /*
+    * -3 for home
+    * -2 for MyEvents
+    * 0,1,2...for fests
+    * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         intialiseViews();
-        uid=PreferenceManager.getDefaultSharedPreferences(this).getString("uid", null);
+        uid = PreferenceManager.getDefaultSharedPreferences(this).getString("uid", null);
         headerList = new ArrayList<>();
         currentEventList = new ArrayList<>();
+        registeredList = new ArrayList<>();
         title = getResources().getString(R.string.app_name);
-        if (savedInstanceState == null){
-            HashMap<String,String>  hashMap=new HashMap<>();
-            hashMap.put("user_id",uid);
-            VolleyHelper.postRequestVolley(this, URL_API.REGISTERED_EVENTS, hashMap, 7);
+        if(mode==-2)
+            title="My Events";
+        else if(mode==-3)
+            title="Home";
+        if (savedInstanceState == null) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("user_id", uid);
+            VolleyHelper.postRequestVolley(this, URL_API.REGISTERED_EVENTS, hashMap, RequestCodes.GET_REGISTRATION);
             VolleyHelper.postRequestVolley(this, URL_API.FESTS, new HashMap<String, String>(), RequestCodes.FESTS);
-        }
-        else {
+        } else {
             headerList = savedInstanceState.getParcelableArrayList("headerList");
             currentEventList = savedInstanceState.getParcelableArrayList("eventList");
+            registeredList = savedInstanceState.getParcelableArrayList("registeredList");
             title = savedInstanceState.getString("title");
+            mode = savedInstanceState.getInt("mode");
         }
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        hashMap.put("fest_id", "2");
+        hashMap.put("event_id", "1");
         getSupportActionBar().setTitle(title);
-        initialiseLists();
+        initialiseLists(savedInstanceState != null);
     }
 
     @Override
@@ -84,6 +102,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("headerList", headerList);
         outState.putParcelableArrayList("eventList", currentEventList);
+        outState.putParcelableArrayList("registeredList", registeredList);
+        outState.putInt("mode", mode);
         outState.putString("title", title);
     }
 
@@ -93,22 +113,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(true);
-        } else if (requestCode == RequestCodes.EVENTS) {
+        } else if ((requestCode == RequestCodes.EVENTS && mode >= 0) || (requestCode == RequestCodes.GET_REGISTRATION && mode == -2)) {
             eventRecycler.setTaskRunning(true);
         }
-        else showDialog();
     }
 
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {
         super.requestEndedWithError(requestCode, error);
-
         if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(false);
-        } else if (requestCode == RequestCodes.EVENTS) {
+        } else if ((requestCode == RequestCodes.EVENTS && mode >= 0) || (requestCode == RequestCodes.GET_REGISTRATION && mode == -2)) {
             eventRecycler.setTaskRunning(false);
         }
-        else dismissDialog();
     }
 
     @Override
@@ -132,21 +149,45 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 currentEventList = new Gson().fromJson(jsonObject.get("events").toString(), new TypeToken<ArrayList<Event>>() {
                 }.getType());
                 String fest_id = jsonObject.getString("fest_id");
-                for (Event event : currentEventList)
+                for (Event event : currentEventList) {
                     event.setFest_id(fest_id);
+                    if (registeredList.contains(event))
+                        event.setRegistered(true);
+                }
                 eventAdapter.setHeaderList(currentEventList);
                 eventAdapter.notifyDataSetChanged();
                 eventRecycler.checkIfEmpty();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        } else if (requestCode == RequestCodes.GET_REGISTRATION) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(response);
+                int i=jsonObject.getInt("success");
+                if(i==1) {
+                    registeredList = new Gson().fromJson(jsonObject.get("registrations").toString(), new TypeToken<ArrayList<Event>>() {
+                    }.getType());
+                    for (Event event : registeredList)
+                        event.setRegistered(true);
+                }
+                    if (mode == -2) {
+                        currentEventList = registeredList;
+                        eventAdapter.setHeaderList(currentEventList);
+                        eventAdapter.notifyDataSetChanged();
+                        eventRecycler.checkIfEmpty();
+                    }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(false);
-        } else if (requestCode == RequestCodes.EVENTS) {
+        } else if ((requestCode == RequestCodes.EVENTS && mode >= 0) || (requestCode == RequestCodes.GET_REGISTRATION && mode == -2)) {
             eventRecycler.setTaskRunning(false);
         }
-        else dismissDialog();
     }
 
     @Override
@@ -179,6 +220,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onDrawerItemClick(int item) {
+        mode = item;
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("fest_id", headerList.get(item).getFestId());
         getSupportActionBar().setTitle(headerList.get(item).getFestName());
@@ -200,11 +242,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         drawerRecycler.setEmptyView((ContentLoadingProgressBar) findViewById(R.id.progressBar), findViewById(R.id.nodata));
         eventRecycler = (EmptyRecyclerView) findViewById(R.id.eventRecycler);
         eventRecycler.setEmptyView((ContentLoadingProgressBar) findViewById(R.id.event_progressBar), findViewById(R.id.event_nodata));
-
+        findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString("uid", null).commit();
+                startActivity(new Intent(MainActivity.this, SplashActivity.class));
+                finish();
+            }
+        });
     }
 
-    void initialiseLists() {
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+    void initialiseLists(boolean rotate) {
+        LinearLayoutManager manager = new LinearLayoutManager(this) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
         drawerRecycler.setLayoutManager(manager);
         customAdapter = new DrawerAdapter(headerList, getApplicationContext());
         customAdapter.setOnItemClickListener(this);
@@ -217,6 +271,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         eventRecycler.setAdapter(eventAdapter);
         eventRecycler.checkIfEmpty();
 
+    }
+
+    void fillList(int mode) {
+
+        if (mode == -2) {
+            if (registeredList.size() > 0) {
+                eventRecycler.setRefreshing();
+                currentEventList = registeredList;
+                eventAdapter.setHeaderList(currentEventList);
+                eventAdapter.notifyDataSetChanged();
+                eventRecycler.checkIfEmpty();
+
+            }
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("user_id", uid);
+            VolleyHelper.postRequestVolley(this, URL_API.REGISTERED_EVENTS, hashMap, RequestCodes.GET_REGISTRATION);
+            title="My Events";
+            getSupportActionBar().setTitle(title);
+        } else if (mode == -3) {
+            title="Home";
+            getSupportActionBar().setTitle(title);
+        }
+        this.mode = mode;
+    }
+
+    public void myEvents(View v) {
+        fillList(-2);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void home(View v) {
+        fillList(-3);
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override

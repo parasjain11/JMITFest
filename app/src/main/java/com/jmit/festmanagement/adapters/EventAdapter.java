@@ -1,6 +1,7 @@
 package com.jmit.festmanagement.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,6 +62,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
                     onItemClickListener.onEventItemClick(headerList.get(position));
             }
         });
+        if(drawerItem.isRegistered()){
+            holder.button.setText("REGISTERED");
+            holder.button.setTextColor(Color.GRAY);
+            holder.button.setClickable(false);
+        }
+        else {
+            holder.button.setText("REGISTER");
+            holder.button.setTextColor(Color.BLACK);
+            holder.button.setClickable(true);
+        }
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
