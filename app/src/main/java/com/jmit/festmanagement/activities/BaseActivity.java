@@ -21,7 +21,7 @@ public class BaseActivity extends AppCompatActivity implements VolleyInterface {
     boolean showing = false;
     CustomDialogFragment alertDialog;
 
-    void showDialog() {
+    public void showDialog() {
         showing = true;
         if (alertDialog == null) {
             alertDialog = new CustomDialogFragment();
@@ -34,7 +34,7 @@ public class BaseActivity extends AppCompatActivity implements VolleyInterface {
         }
     }
 
-    void dismissDialog() {
+    public void dismissDialog() {
         showing = false;
         if (alertDialog!=null && alertDialog.isVisible())
             alertDialog.dismissAllowingStateLoss();

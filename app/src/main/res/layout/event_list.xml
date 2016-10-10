@@ -9,21 +9,5 @@
 
     </com.jmit.festmanagement.utils.EmptyRecyclerView>
 
-    <android.support.v4.widget.ContentLoadingProgressBar
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:id="@+id/event_progressBar"
-        android:indeterminateTintMode="src_in"
-        android:indeterminateTint="@android:color/black"
-        android:indeterminate="true"
-        android:indeterminateBehavior="repeat"
-        style="@style/Base.Widget.AppCompat.ProgressBar"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/event_nodata"
-        android:text="Sorry, No data available"/>
-
+    <include layout="@layout/empty_recycler"/>
 </FrameLayout>

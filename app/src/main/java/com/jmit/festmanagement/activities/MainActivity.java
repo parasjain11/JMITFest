@@ -156,6 +156,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             drawerRecycler.setTaskRunning(false);
         }
     }
+/*
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,6 +179,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         return super.onOptionsItemSelected(item);
     }
+*/
 
 
     @Override
