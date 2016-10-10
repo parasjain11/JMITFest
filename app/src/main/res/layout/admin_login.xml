@@ -66,6 +66,7 @@
                     android:layout_marginRight="20dp"
                     android:ems="10"
                     android:hint="@string/hint_roll"
+                    android:textColor="@android:color/white"
                     android:inputType="number"
                     android:singleLine="true"
                     android:textColorHint="#ffff0000" />
@@ -90,6 +91,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
+                    android:textColor="@android:color/white"
                     android:ems="10"
                     android:hint="@string/hint_password"
                     android:inputType="textPassword"

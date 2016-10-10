@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
@@ -145,6 +146,7 @@ public class SignUpActivity extends BaseActivity {
                 Toast.makeText(this,jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
                 startActivity(StudentLogin.class);
             }
+            else Snackbar.make(findViewById(R.id.main_frame),jsonObject.getString("message"),Snackbar.LENGTH_LONG).show();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -71,7 +71,6 @@ public class SplashActivity extends BaseActivity {
             JSONObject jsonObject = new JSONObject(response);
             int i = jsonObject.getInt("success");
             if (i == 1) {
-                Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
                 SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
                 editor.putString("user", jsonObject.getString("user_name")).commit();
                 editor.putString("email", jsonObject.getString("email")).commit();
