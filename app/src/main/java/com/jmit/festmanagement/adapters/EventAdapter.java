@@ -25,9 +25,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
     private List<Event> headerList;
     private Context context;
     OnItemClickListener onItemClickListener;
-    public EventAdapter(List<Event> headersList, Context context) {
+    boolean myeventsMode = false;
+
+    public EventAdapter(List<Event> headersList, Context context, boolean myeventsMode) {
         this.context = context;
         this.headerList = headersList;
+        this.myeventsMode = myeventsMode;
     }
 
     public void setHeaderList(List<Event> headerList) {
@@ -39,9 +42,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_row, null);
         return new MyViewHolder(view);
     }
-    public interface OnItemClickListener{
+
+    public interface OnItemClickListener {
         void onEventItemClick(Event event);
-        void onRegisterClick(Event event);
+
+        void onRegisterClick(Event event,boolean register);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -54,20 +59,26 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         holder.title.setText(drawerItem.getEventName());
         holder.desc.setText(drawerItem.getEventDesc());
         holder.venue.setText(drawerItem.getVenue());
-        holder.date.setText(drawerItem.getStartDate()+" to "+drawerItem.getEndDate());
+        holder.date.setText(drawerItem.getStartDate() + " to " + drawerItem.getEndDate());
         holder.row_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClickListener!=null)
+                if (onItemClickListener != null)
                     onItemClickListener.onEventItemClick(headerList.get(position));
             }
         });
-        if(drawerItem.isRegistered()){
-            holder.button.setText("REGISTERED");
-            holder.button.setTextColor(Color.parseColor("#8D6E63"));
-            holder.button.setClickable(false);
-        }
-        else {
+        if (drawerItem.isRegistered()) {
+            if (myeventsMode) {
+
+                holder.button.setText("UNREGISTER");
+                holder.button.setTextColor(Color.parseColor("#8D6E63"));
+                holder.button.setClickable(true);
+            } else {
+                holder.button.setText("REGISTERED");
+                holder.button.setTextColor(Color.GRAY);
+                holder.button.setClickable(false);
+            }
+        } else {
             holder.button.setText("REGISTER");
             holder.button.setTextColor(Color.parseColor("#795548"));
             holder.button.setClickable(true);
@@ -75,10 +86,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClickListener!=null)
-                    onItemClickListener.onRegisterClick(headerList.get(position));
+                if (onItemClickListener != null)
+                    onItemClickListener.onRegisterClick(headerList.get(position),!drawerItem.isRegistered());
             }
         });
+    }
+
+    public void setMyeventsMode(boolean myeventsMode) {
+        this.myeventsMode = myeventsMode;
     }
 
     @Override
@@ -87,17 +102,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView title,desc,venue,date;
+        private TextView title, desc, venue, date;
         private View row_view;
         AppCompatButton button;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             row_view = itemView;
             title = (TextView) itemView.findViewById(R.id.title);
             desc = (TextView) itemView.findViewById(R.id.desc);
-            venue=(TextView)itemView.findViewById(R.id.venue);
-            date=(TextView)itemView.findViewById(R.id.date);
-            button=(AppCompatButton)itemView.findViewById(R.id.register);
-            }
+            venue = (TextView) itemView.findViewById(R.id.venue);
+            date = (TextView) itemView.findViewById(R.id.date);
+            button = (AppCompatButton) itemView.findViewById(R.id.register);
+        }
     }
 }

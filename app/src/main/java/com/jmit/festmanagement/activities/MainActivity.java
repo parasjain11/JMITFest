@@ -63,16 +63,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         intialiseViews();
         sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this);
         uid = sharedPreferences.getString("uid", null);
-         user=sharedPreferences.getString("user","");
-        email=sharedPreferences.getString("email","");
-        phone=sharedPreferences.getString("phone","");
-        isAdmin=sharedPreferences.getBoolean("isAdmin",false);
-        if(isAdmin)
-            findViewById(R.id.adminPanel).setVisibility(View.VISIBLE);
-        TextView textView=(TextView)findViewById(R.id.username);
-        textView.setText(user+"("+uid+")");
-        TextView email1=(TextView)findViewById(R.id.email);
-        email1.setText(email);
+        fillDrawerHeader();
         headerList = new ArrayList<>();
         title = getResources().getString(R.string.app_name);
         if (mode == -2)
@@ -96,7 +87,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         getSupportActionBar().setTitle(title);
         initialiseLists(savedInstanceState != null);
     }
+    void fillDrawerHeader(){
+        user=sharedPreferences.getString("user","");
+        email=sharedPreferences.getString("email","");
+        phone=sharedPreferences.getString("phone","");
+        isAdmin=sharedPreferences.getBoolean("isAdmin",false);
+        if(isAdmin)
+            findViewById(R.id.adminPanel).setVisibility(View.VISIBLE);
+        TextView textView=(TextView)findViewById(R.id.username);
+        textView.setText(user+"("+uid+")");
+        TextView email1=(TextView)findViewById(R.id.email);
+        email1.setText(email);
 
+    }
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -121,6 +124,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(true);
         }
+        else if(requestCode==RequestCodes.EDIT_DETAILS){
+            showDialog();
+        }
     }
 
     @Override
@@ -128,6 +134,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         super.requestEndedWithError(requestCode, error);
         if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(false);
+        }
+        else if(requestCode==RequestCodes.EDIT_DETAILS){
+            dismissDialog();
         }
     }
 
@@ -158,9 +167,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }else if(requestCode==RequestCodes.EDIT_DETAILS) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                int i = jsonObject.getInt("success");
+                if (i == 1) {
+                    SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
+                    editor.putString("user", jsonObject.getString("user_name")).commit();
+                    editor.putString("email", jsonObject.getString("email")).commit();
+                    editor.putString("phone",jsonObject.getString("ph_no")).commit();
+                    fillDrawerHeader();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         if (requestCode == RequestCodes.FESTS) {
             drawerRecycler.setTaskRunning(false);
+        }
+        else if(requestCode==RequestCodes.EDIT_DETAILS){
+            dismissDialog();
         }
     }
 /*
@@ -258,12 +284,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void editDetails(View v){
         MaterialDialog.Builder builder=new MaterialDialog.Builder(this);
         View view=getLayoutInflater().inflate(R.layout.dialog_edit_details,null);
-        TextInputEditText name=(TextInputEditText)view.findViewById(R.id.name);
-        TextInputEditText phone=(TextInputEditText)view.findViewById(R.id.phone);
-        TextInputEditText email=(TextInputEditText)view.findViewById(R.id.email);
-        name.setText(this.user);
-        phone.setText(this.phone);
-        email.setText(this.email);
+        final TextInputEditText name1=(TextInputEditText)view.findViewById(R.id.name);
+        final TextInputEditText phone1=(TextInputEditText)view.findViewById(R.id.phone);
+        final TextInputEditText email1=(TextInputEditText)view.findViewById(R.id.email);
+        name1.setText(this.user);
+        phone1.setText(this.phone);
+        email1.setText(this.email);
         builder.customView(view,true);
         builder.title("Edit Details");
         builder.negativeText("Cancel");
@@ -271,7 +297,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
+                HashMap<String,String> hashMap=new HashMap<String, String>();
+                hashMap.put("roll_no",uid);
+                hashMap.put("user_name",name1.getText().toString());
+                hashMap.put("ph_no",phone1.getText().toString());
+                hashMap.put("email",email1.getText().toString());
+                VolleyHelper.postRequestVolley(MainActivity.this, URL_API.EDIT_DETAILS, hashMap, RequestCodes.EDIT_DETAILS);
             }
         });
         builder.show();

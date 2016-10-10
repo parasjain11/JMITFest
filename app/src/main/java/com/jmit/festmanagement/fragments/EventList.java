@@ -44,6 +44,7 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
     MainActivity mainActivity;
     int mode;
     String fest_id;
+
     public static EventList newInstance(int mode, String fest_id) {
         Bundle args = new Bundle();
         args.putInt("mode", mode);
@@ -56,7 +57,7 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mainActivity=(MainActivity)context;
+        mainActivity = (MainActivity) context;
     }
 
     @Override
@@ -97,7 +98,8 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
             initialiseList(view);
         }
     }
-    void refresh(){
+
+    void refresh() {
         if (fest_id != null) {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("fest_id", fest_id);
@@ -108,13 +110,13 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
             VolleyHelper.postRequestVolley(getActivity(), this, URL_API.REGISTERED_EVENTS, hashMap, RequestCodes.GET_REGISTRATION);
         }
     }
+
     @Override
     public void requestStarted(int requestCode) {
         if (requestCode == RequestCodes.EVENTS || requestCode == RequestCodes.GET_REGISTRATION) {
             eventRecycler.setTaskRunning(true);
-        }
-        else if(requestCode==RequestCodes.REGISTRATION){
-            if(mainActivity!=null)
+        } else if (requestCode == RequestCodes.REGISTRATION || requestCode==RequestCodes.UNREGISTRATION) {
+            if (mainActivity != null)
                 mainActivity.showDialog();
         }
     }
@@ -134,7 +136,9 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
                         event.setFest_id(fest_id);
                         if (DataHandler.getRegistered_events().contains(event))
                             event.setRegistered(true);
+                        else event.setRegistered(false);
                     }
+                    eventAdapter.setMyeventsMode(false);
                     eventAdapter.setHeaderList(currentEventList);
                     eventAdapter.notifyDataSetChanged();
                     eventRecycler.checkIfEmpty();
@@ -151,6 +155,7 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
                     }.getType());
                     for (Event e : currentEventList) e.setRegistered(true);
                     DataHandler.setRegistered_events(currentEventList, false);
+                    eventAdapter.setMyeventsMode(true);
                     eventAdapter.setHeaderList(currentEventList);
                     eventAdapter.notifyDataSetChanged();
                     eventRecycler.checkIfEmpty();
@@ -158,9 +163,20 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        else if(requestCode==RequestCodes.REGISTRATION){
-            if(mainActivity!=null)
+        } else if (requestCode == RequestCodes.UNREGISTRATION) {
+            if (mainActivity != null)
+                mainActivity.dismissDialog();
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(response);
+                if (jsonObject.getInt("success") == 1) {
+                    refresh();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == RequestCodes.REGISTRATION) {
+            if (mainActivity != null)
                 mainActivity.dismissDialog();
         }
 
@@ -173,9 +189,8 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
     public void requestEndedWithError(int requestCode, VolleyError error) {
         if (requestCode == RequestCodes.EVENTS || requestCode == RequestCodes.GET_REGISTRATION) {
             eventRecycler.setTaskRunning(false);
-        }
-        else if(requestCode==RequestCodes.REGISTRATION){
-            if(mainActivity!=null)
+        } else if (requestCode == RequestCodes.REGISTRATION  || requestCode==RequestCodes.UNREGISTRATION) {
+            if (mainActivity != null)
                 mainActivity.dismissDialog();
         }
     }
@@ -185,7 +200,7 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
         eventRecycler.setEmptyView((ContentLoadingProgressBar) view.findViewById(R.id.event_progressBar), view.findViewById(R.id.event_nodata));
         LinearLayoutManager manager1 = new LinearLayoutManager(getActivity());
         eventRecycler.setLayoutManager(manager1);
-        eventAdapter = new EventAdapter(currentEventList, getActivity());
+        eventAdapter = new EventAdapter(currentEventList, getActivity(), mode == -2 ? true : false);
         eventAdapter.setOnItemClickListener(this);
         eventRecycler.setAdapter(eventAdapter);
         eventRecycler.checkIfEmpty();
@@ -198,13 +213,20 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
     }
 
     @Override
-    public void onRegisterClick(Event event) {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("fest_id", event.getFest_id());
-        hashMap.put("event_id", event.getEventId());
-        hashMap.put("user_id", uid);
-        VolleyHelper.postRequestVolley(getActivity(), this, URL_API.REGISTRATION, hashMap, RequestCodes.REGISTRATION);
-
+    public void onRegisterClick(Event event, boolean register) {
+        if (register) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("fest_id", event.getFest_id());
+            hashMap.put("event_id", event.getEventId());
+            hashMap.put("user_id", uid);
+            VolleyHelper.postRequestVolley(getActivity(), this, URL_API.REGISTRATION, hashMap, RequestCodes.REGISTRATION);
+        } else {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("fest_id", event.getFest_id());
+            hashMap.put("event_id", event.getEventId());
+            hashMap.put("user_id", uid);
+            VolleyHelper.postRequestVolley(getActivity(), this, URL_API.UNREGISTRATION, hashMap, RequestCodes.UNREGISTRATION);
+        }
     }
 
     @Override
