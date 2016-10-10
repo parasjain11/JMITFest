@@ -1,6 +1,7 @@
 package com.jmit.festmanagement.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,6 +29,9 @@ public class Home extends BaseActivity {
                 startActivity(AdminLogin.class);
             }
         });
-
+        GradientDrawable background = (GradientDrawable) student.getBackground();
+        background.setColor(getResources().getColor(R.color.colorAccent));
+        GradientDrawable background1 = (GradientDrawable) admin.getBackground();
+        background1.setColor(getResources().getColor(R.color.colorAccent));
     }
 }
