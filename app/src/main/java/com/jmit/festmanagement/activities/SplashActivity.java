@@ -68,7 +68,11 @@ public class SplashActivity extends BaseActivity {
             int i = jsonObject.getInt("success");
             if (i == 1) {
                 Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("uid", uid).putBoolean("isStudent", true).commit();
+                SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putString("user", jsonObject.getString("user_name")).commit();
+                editor.putString("email", jsonObject.getString("email")).commit();
+                editor.putString("phone",jsonObject.getString("ph_no")).commit();
+
                 startActivity( MainActivity.class);
             } else startHome();
         } catch (JSONException e) {

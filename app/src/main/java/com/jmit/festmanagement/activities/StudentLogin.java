@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -44,10 +45,6 @@ public class StudentLogin extends BaseActivity {
 
         final EditText Rollno = (EditText) findViewById(R.id.editText);
         Button stulogin = (Button) findViewById(R.id.stuLogin);
-        TextView signUp = (TextView) findViewById(R.id.SignUp);
-        SpannableString content = new SpannableString("Sign Up?");
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        signUp.setText(content);
         stulogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,13 +59,13 @@ public class StudentLogin extends BaseActivity {
                 VolleyHelper.postRequestVolley(StudentLogin.this, URL_API.LOGIN_API, hashMap, RequestCodes.LOGIN);
             }
         });
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(StudentLogin.this, SignUpActivity.class));
-                finish();
-            }
-        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
     @Override
@@ -77,9 +74,13 @@ public class StudentLogin extends BaseActivity {
             case android.R.id.home:
                 startActivity(Home.class);
                 break;
+            case R.id.action_settings:
+                startActivity(SignUpActivity.class);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -97,9 +98,10 @@ public class StudentLogin extends BaseActivity {
             if (i == 1) {
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
                 Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
-                editor.putString("uid", uid).putBoolean("isStudent", true).commit();
+                editor.putString("uid", uid).commit();
                 editor.putString("user", jsonObject.getString("user_name")).commit();
                 editor.putString("email", jsonObject.getString("email")).commit();
+                editor.putString("phone",jsonObject.getString("ph_no")).commit();
                 editor.putBoolean("isAdmin",false).commit();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();

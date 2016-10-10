@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -46,6 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     int mode = -2;
     boolean isAdmin=false;
     SharedPreferences sharedPreferences;
+    String user,email,phone;
     /*
     *-3 for home (not present yet)
     * -2 for MyEvents
@@ -58,12 +63,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         intialiseViews();
         sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this);
         uid = sharedPreferences.getString("uid", null);
-        String user=sharedPreferences.getString("user",""),email=sharedPreferences.getString("email","");
+         user=sharedPreferences.getString("user","");
+        email=sharedPreferences.getString("email","");
+        phone=sharedPreferences.getString("phone","");
         isAdmin=sharedPreferences.getBoolean("isAdmin",false);
         if(isAdmin)
             findViewById(R.id.adminPanel).setVisibility(View.VISIBLE);
         TextView textView=(TextView)findViewById(R.id.username);
-        textView.setText(user);
+        textView.setText(user+"("+uid+")");
         TextView email1=(TextView)findViewById(R.id.email);
         email1.setText(email);
         headerList = new ArrayList<>();
@@ -247,6 +254,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_frame, EventList.newInstance(mode,fest_id));
         transaction.commit();
+    }
+    public void editDetails(View v){
+        MaterialDialog.Builder builder=new MaterialDialog.Builder(this);
+        View view=getLayoutInflater().inflate(R.layout.dialog_edit_details,null);
+        TextInputEditText name=(TextInputEditText)view.findViewById(R.id.name);
+        TextInputEditText phone=(TextInputEditText)view.findViewById(R.id.phone);
+        TextInputEditText email=(TextInputEditText)view.findViewById(R.id.email);
+        name.setText(this.user);
+        phone.setText(this.phone);
+        email.setText(this.email);
+        builder.customView(view,true);
+        builder.title("Edit Details");
+        builder.negativeText("Cancel");
+        builder.positiveText("Set");
+        builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+            }
+        });
+        builder.show();
     }
     public void myEvents(View v) {
         fillList(-2);

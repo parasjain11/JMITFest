@@ -29,9 +29,5 @@ public class Home extends BaseActivity {
                 startActivity(AdminLogin.class);
             }
         });
-        GradientDrawable background = (GradientDrawable) student.getBackground();
-        background.setColor(getResources().getColor(R.color.colorAccent));
-        GradientDrawable background1 = (GradientDrawable) admin.getBackground();
-        background1.setColor(getResources().getColor(R.color.colorAccent));
     }
 }

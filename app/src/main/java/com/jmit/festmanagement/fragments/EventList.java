@@ -20,6 +20,7 @@ import com.jmit.festmanagement.adapters.EventAdapter;
 import com.jmit.festmanagement.data.Event;
 import com.jmit.festmanagement.utils.DataHandler;
 import com.jmit.festmanagement.utils.EmptyRecyclerView;
+import com.jmit.festmanagement.utils.FLog;
 import com.jmit.festmanagement.utils.RequestCodes;
 import com.jmit.festmanagement.utils.URL_API;
 import com.jmit.festmanagement.utils.VolleyHelper;
@@ -120,6 +121,7 @@ public class EventList extends Fragment implements VolleyInterface, EventAdapter
 
     @Override
     public void requestCompleted(int requestCode, String response) {
+        FLog.d(response);
         if (requestCode == RequestCodes.EVENTS) {
             JSONObject jsonObject = null;
             try {
