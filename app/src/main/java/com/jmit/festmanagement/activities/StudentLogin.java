@@ -75,8 +75,7 @@ public class StudentLogin extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(this, Home.class));
-                finish();
+                startActivity(Home.class);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -85,8 +84,7 @@ public class StudentLogin extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(this, Home.class));
-        finish();
+        startActivity(( Home.class));
     }
 
     @Override
@@ -102,6 +100,7 @@ public class StudentLogin extends BaseActivity {
                 editor.putString("uid", uid).putBoolean("isStudent", true).commit();
                 editor.putString("user", jsonObject.getString("user_name")).commit();
                 editor.putString("email", jsonObject.getString("email")).commit();
+                editor.putBoolean("isAdmin",false).commit();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             } else

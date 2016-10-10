@@ -3,6 +3,8 @@ package com.jmit.festmanagement.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +24,9 @@ public class AdminLogin extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_login);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final EditText Rollno = (EditText) findViewById(R.id.roll);
         final EditText Paswd = (EditText) findViewById(R.id.pwd);
         Button adminlogin = (Button) findViewById(R.id.adminLogin);
@@ -46,6 +51,23 @@ public class AdminLogin extends BaseActivity {
         super.requestStarted(requestCode);
         showDialog();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(Home.class);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(( Home.class));
+    }
+
 
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {

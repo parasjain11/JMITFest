@@ -75,8 +75,7 @@ public class SignUpActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(this,StudentLogin.class));
-        finish();
+        startActivity(StudentLogin.class);
 
     }
 

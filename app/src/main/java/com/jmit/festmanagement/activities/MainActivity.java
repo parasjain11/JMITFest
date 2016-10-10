@@ -4,19 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.ContentLoadingProgressBar;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -24,7 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jmit.festmanagement.R;
 import com.jmit.festmanagement.adapters.DrawerAdapter;
-import com.jmit.festmanagement.adapters.EventAdapter;
 import com.jmit.festmanagement.data.Event;
 import com.jmit.festmanagement.data.Fest;
 import com.jmit.festmanagement.fragments.EventList;
@@ -39,7 +34,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, DrawerAdapter.OnItemClickListener{
 
@@ -50,6 +44,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     String title;
     String uid;
     int mode = -2;
+    boolean isAdmin=false;
     SharedPreferences sharedPreferences;
     /*
     *-3 for home (not present yet)
@@ -64,6 +59,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this);
         uid = sharedPreferences.getString("uid", null);
         String user=sharedPreferences.getString("user",""),email=sharedPreferences.getString("email","");
+        isAdmin=sharedPreferences.getBoolean("isAdmin",false);
+        if(isAdmin)
+            findViewById(R.id.adminPanel).setVisibility(View.VISIBLE);
         TextView textView=(TextView)findViewById(R.id.username);
         textView.setText(user);
         TextView email1=(TextView)findViewById(R.id.email);

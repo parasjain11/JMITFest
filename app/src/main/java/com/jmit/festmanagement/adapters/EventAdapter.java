@@ -64,12 +64,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         });
         if(drawerItem.isRegistered()){
             holder.button.setText("REGISTERED");
-            holder.button.setTextColor(Color.GRAY);
+            holder.button.setTextColor(Color.parseColor("#8D6E63"));
             holder.button.setClickable(false);
         }
         else {
             holder.button.setText("REGISTER");
-            holder.button.setTextColor(Color.BLACK);
+            holder.button.setTextColor(Color.parseColor("#795548"));
             holder.button.setClickable(true);
         }
         holder.button.setOnClickListener(new View.OnClickListener() {
