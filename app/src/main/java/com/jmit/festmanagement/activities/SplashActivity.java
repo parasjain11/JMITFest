@@ -12,6 +12,8 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.jmit.festmanagement.R;
+import com.jmit.festmanagement.data.Event;
+import com.jmit.festmanagement.utils.DataHandler;
 import com.jmit.festmanagement.utils.RequestCodes;
 import com.jmit.festmanagement.utils.URL_API;
 import com.jmit.festmanagement.utils.Utils;
@@ -20,6 +22,7 @@ import com.jmit.festmanagement.utils.VolleyHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -34,6 +37,7 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        DataHandler.setRegistered_events(new ArrayList<Event>(),false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (sharedPreferences.getBoolean("isStudent", true)) {
             if ((uid = sharedPreferences.getString("uid", null)) != null) {
@@ -72,7 +76,7 @@ public class SplashActivity extends BaseActivity {
                 editor.putString("user", jsonObject.getString("user_name")).commit();
                 editor.putString("email", jsonObject.getString("email")).commit();
                 editor.putString("phone",jsonObject.getString("ph_no")).commit();
-
+                editor.putString("user_id", jsonObject.getString("user_id")).commit();
                 startActivity( MainActivity.class);
             } else startHome();
         } catch (JSONException e) {

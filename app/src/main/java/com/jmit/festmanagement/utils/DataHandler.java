@@ -28,6 +28,12 @@ public class DataHandler {
     public static void setRegisteredEventsListener(RegisteredEventsListener registeredEventsListener1) {
         registeredEventsListener = registeredEventsListener1;
     }
+    public static void addEvent(Event event,boolean callInterface){
+        registered_events.add(event);
+        if(registeredEventsListener!=null && callInterface)
+            registeredEventsListener.onRegisteredEventsChanged(registered_events);
+
+    }
 
     public interface RegisteredEventsListener{
     void onRegisteredEventsChanged(ArrayList<Event> events);

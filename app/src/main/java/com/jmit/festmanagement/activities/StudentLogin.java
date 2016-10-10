@@ -99,6 +99,7 @@ public class StudentLogin extends BaseActivity {
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
                 Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
                 editor.putString("uid", uid).commit();
+                editor.putString("user_id", jsonObject.getString("user_id")).commit();
                 editor.putString("user", jsonObject.getString("user_name")).commit();
                 editor.putString("email", jsonObject.getString("email")).commit();
                 editor.putString("phone",jsonObject.getString("ph_no")).commit();

@@ -81,6 +81,9 @@ public class Event implements Parcelable  {
         this.registered = registered;
     }
 
+    public Event() {
+    }
+
     /**
      *
      * @return
