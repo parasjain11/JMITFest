@@ -278,6 +278,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
     void addEventsFragment(int mode,String fest_id){
         android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
         transaction.replace(R.id.main_frame, EventList.newInstance(mode,fest_id));
         transaction.commit();
     }

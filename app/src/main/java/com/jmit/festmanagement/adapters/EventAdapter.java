@@ -72,16 +72,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
 
                 holder.button.setText("UNREGISTER");
                 holder.button.setTextColor(Color.parseColor("#8D6E63"));
-                holder.button.setClickable(true);
+                holder.button.setEnabled(true);
             } else {
                 holder.button.setText("REGISTERED");
                 holder.button.setTextColor(Color.GRAY);
-                holder.button.setClickable(false);
+                holder.button.setEnabled(false);
             }
         } else {
             holder.button.setText("REGISTER");
             holder.button.setTextColor(Color.parseColor("#795548"));
-            holder.button.setClickable(true);
+            holder.button.setEnabled(true);
         }
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
