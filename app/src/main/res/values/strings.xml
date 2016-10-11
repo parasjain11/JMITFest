@@ -10,4 +10,8 @@
     <string name="btn_log_in">Log In</string>
     <string name="btn_continue">Continue</string>
     <string name="action_settings">Settings</string>
+
+    <string name="spinner_title_fest">Select Fest</string>
+    <string name="spinner_title_event">Select Event</string>
+    <string name="submit">Submit</string>
 </resources>
