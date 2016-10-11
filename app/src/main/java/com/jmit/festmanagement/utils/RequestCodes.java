@@ -14,4 +14,5 @@ public class RequestCodes {
     public static final int GET_REGISTRATION=7;
     public static final int EDIT_DETAILS=8;
     public static final int UNREGISTRATION=9;
+    public static final int ADMIN_REGISTERED_EVENTS=10;
 }

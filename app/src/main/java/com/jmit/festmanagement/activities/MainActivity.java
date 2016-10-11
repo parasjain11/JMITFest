@@ -359,4 +359,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         drawer.closeDrawer(GravityCompat.START);
     }
 
+    public ArrayList<Fest> getHeaderList() {
+        return headerList;
+    }
 }
