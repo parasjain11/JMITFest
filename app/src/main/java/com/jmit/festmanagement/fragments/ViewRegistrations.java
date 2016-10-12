@@ -52,7 +52,7 @@ public class ViewRegistrations extends BaseFragment {
     ArrayAdapter festdataAdapter, eventdataAdapter;
     Spinner spinnerFest, spinnerEvent;
     RegistrationAdapter registrationAdapter;
-
+    boolean skipOnce,skipOnce2;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -69,15 +69,20 @@ public class ViewRegistrations extends BaseFragment {
     }
 
     @Override
-    public void onViewCreated(View rootView, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View rootView, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
-
+        skipOnce=skipOnce2=true;
         spinnerFest = (Spinner) rootView.findViewById(R.id.spinner_fest);
         spinnerEvent = (Spinner) rootView.findViewById(R.id.spinner_event);
         registrations = new ArrayList<>();
         if (festList == null)
             festList = new ArrayList<>();
         eventList = new ArrayList<>();
+        if (savedInstanceState != null) {
+            eventList = savedInstanceState.getParcelableArrayList("eventList");
+            festList = savedInstanceState.getParcelableArrayList("festList");
+            registrations = savedInstanceState.getParcelableArrayList("registrations");
+        }
         initialiseList(rootView);
 
         festdataAdapter = new SpinnerFestAdapter(getActivity(), R.layout.spinner_row, festList);
@@ -88,7 +93,7 @@ public class ViewRegistrations extends BaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 loadEvents(festList.get(position).getFestId());
-                eventList=new ArrayList<Event>();
+                eventList = new ArrayList<Event>();
                 eventdataAdapter = new SpinnerEventAdapter(getActivity(), R.layout.spinner_row, eventList);
                 spinnerEvent.setAdapter(eventdataAdapter);
             }
@@ -109,6 +114,14 @@ public class ViewRegistrations extends BaseFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("registrations", registrations);
+        outState.putParcelableArrayList("eventList", eventList);
+        outState.putParcelableArrayList("festList", festList);
     }
 
     void loadEvents(String fest_id) {
