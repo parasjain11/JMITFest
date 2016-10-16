@@ -30,7 +30,7 @@ import java.util.HashMap;
  */
 
 public class SplashActivity extends BaseActivity {
-    String uid;
+    String uid,pswd;
     SharedPreferences sharedPreferences;
 
     @Override
@@ -40,10 +40,11 @@ public class SplashActivity extends BaseActivity {
         DataHandler.setRegistered_events(new ArrayList<Event>(),false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (sharedPreferences.getBoolean("isStudent", true)) {
-            if ((uid = sharedPreferences.getString("uid", null)) != null) {
+            if ((uid = sharedPreferences.getString("uid", null)) != null && (pswd=sharedPreferences.getString("pswd",null))!=null) {
 
                 HashMap<String, String> hashMap = new HashMap<String, String>();
                 hashMap.put("roll_no", uid);
+                hashMap.put("pswd", pswd);
                 hashMap.put("device_id", Utils.getdeviceId(this));
                 VolleyHelper.postRequestVolley(this, URL_API.LOGIN_API, hashMap, RequestCodes.LOGIN);
                 return;
@@ -76,6 +77,7 @@ public class SplashActivity extends BaseActivity {
                 editor.putString("email", jsonObject.getString("email")).commit();
                 editor.putString("phone",jsonObject.getString("ph_no")).commit();
                 editor.putString("user_id", jsonObject.getString("user_id")).commit();
+                editor.putBoolean("isAdmin",jsonObject.getInt("isadmin")==1).commit();
                 startActivity( MainActivity.class);
             } else startHome();
         } catch (JSONException e) {

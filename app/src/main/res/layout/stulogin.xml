@@ -70,6 +70,28 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="40dp"
+            app:theme="@style/TextLabel">
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_above="@+id/stuLogin"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColorHint="#ffff0000" />
+</android.support.design.widget.TextInputLayout>
         <Button
             android:id="@+id/stuLogin"
             android:layout_width="wrap_content"

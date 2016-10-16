@@ -235,7 +235,8 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
 
     @Override
     public void onEventItemClick(Event event) {
-
+    if(mainActivity!=null)
+        mainActivity.showBottomSheet(event);
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,7 @@ import com.jmit.festmanagement.data.Event;
 import com.jmit.festmanagement.data.Fest;
 import com.jmit.festmanagement.fragments.AddEvent;
 import com.jmit.festmanagement.fragments.EditEvent;
+import com.jmit.festmanagement.fragments.EventDialog;
 import com.jmit.festmanagement.fragments.EventList;
 import com.jmit.festmanagement.fragments.UploadResults;
 import com.jmit.festmanagement.fragments.ViewRegistrations;
@@ -99,7 +103,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         email = sharedPreferences.getString("email", "");
         phone = sharedPreferences.getString("phone", "");
         isAdmin = sharedPreferences.getBoolean("isAdmin", false);
-        // if(isAdmin)
+        if(isAdmin)
         findViewById(R.id.adminPanel).setVisibility(View.VISIBLE);
         TextView textView = (TextView) findViewById(R.id.username);
         textView.setText(user + "(" + uid + ")");
@@ -361,5 +365,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public ArrayList<Fest> getHeaderList() {
         return headerList;
+    }
+    public void showBottomSheet(Event drawerItem){
+        BottomSheetDialogFragment bottomSheetDialogFragment = EventDialog.newInstance(drawerItem,getBottmSheetPeekHeight());
+        bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+    }
+    public int getBottmSheetPeekHeight(){
+        int actionBarHeight=0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
     }
 }

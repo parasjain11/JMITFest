@@ -103,7 +103,9 @@ public class VolleyHelper {
                 vi.requestEndedWithError(request_code, error);
 
             }
-        }){
+        }
+        )
+        {
             @Override
             protected Map<String,String> getParams(){
                 return checkParams(hm);

@@ -32,7 +32,7 @@ import java.util.HashMap;
 
 public class StudentLogin extends BaseActivity {
     Toolbar toolbar;
-    String uid;
+    String uid,pswd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,7 @@ public class StudentLogin extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final EditText Rollno = (EditText) findViewById(R.id.editText);
+        final EditText password = (EditText) findViewById(R.id.editText1);
         Button stulogin = (Button) findViewById(R.id.stuLogin);
         stulogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,8 +54,10 @@ public class StudentLogin extends BaseActivity {
                     return;
                 }
                 uid = Rollno.getText().toString();
+                pswd=password.getText().toString();
                 HashMap<String, String> hashMap = new HashMap<String, String>();
                 hashMap.put("roll_no", uid);
+                hashMap.put("pswd",pswd);
                 hashMap.put("device_id", Utils.getdeviceId(StudentLogin.this));
                 VolleyHelper.postRequestVolley(StudentLogin.this, URL_API.LOGIN_API, hashMap, RequestCodes.LOGIN);
             }
@@ -99,11 +102,12 @@ public class StudentLogin extends BaseActivity {
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
                 Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
                 editor.putString("uid", uid).commit();
+                editor.putString("pswd",pswd);
                 editor.putString("user_id", jsonObject.getString("user_id")).commit();
                 editor.putString("user", jsonObject.getString("user_name")).commit();
                 editor.putString("email", jsonObject.getString("email")).commit();
                 editor.putString("phone",jsonObject.getString("ph_no")).commit();
-                editor.putBoolean("isAdmin",false).commit();
+                editor.putBoolean("isAdmin",jsonObject.getInt("isadmin")==1).commit();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             } else
