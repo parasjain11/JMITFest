@@ -78,6 +78,8 @@ public class SplashActivity extends BaseActivity {
                 editor.putString("phone",jsonObject.getString("ph_no")).commit();
                 editor.putString("user_id", jsonObject.getString("user_id")).commit();
                 editor.putBoolean("isAdmin",jsonObject.getInt("isadmin")==1).commit();
+                if(jsonObject.getInt("isadmin")==1)
+                    editor.putString("fest_id",jsonObject.getString("fest_id")).commit();
                 startActivity( MainActivity.class);
             } else startHome();
         } catch (JSONException e) {

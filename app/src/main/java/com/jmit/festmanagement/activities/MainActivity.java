@@ -379,4 +379,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         return actionBarHeight;
     }
+    public String getFestNameById(String fest_id){
+        for(Fest fest:headerList){
+            if(fest.getFestId().equals(fest_id))
+                return fest.getFestName();
+        }
+        return "";
+    }
 }

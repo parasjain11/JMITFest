@@ -2,8 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -11,12 +13,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/festLabel"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-smallcaps"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Fest:" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_below="@+id/festLabel"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:id="@+id/event_chooser"
+            android:visibility="gone"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="sans-serif-smallcaps"
+                android:layout_marginTop="10dip"
+                android:text="Event:" />
+
+            <Spinner
+                android:id="@+id/spinner_event"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/spinner_title_event" />
+
+        </LinearLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@+id/fEventLayout"
+            android:layout_below="@id/event_chooser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp">
+            android:layout_centerHorizontal="true">
 
             <EditText
                 android:id="@+id/event_name"
@@ -43,6 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
+                android:maxLines="4"
                 android:hint="Event Description"
                 android:inputType="textMultiLine"
                 android:textColor="@android:color/black" />
@@ -62,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
+                android:maxLines="1"
                 android:focusable="false"
                 android:hint="Start Time"
                 android:textColor="@android:color/black" />
@@ -81,6 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
+                android:maxLines="1"
                 android:focusable="false"
                 android:hint="End Time"
                 android:textColor="@android:color/black" />
@@ -100,6 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
+                android:maxLines="1"
                 android:focusable="false"
                 android:hint="Start Date"
                 android:textColor="@android:color/black" />
@@ -118,6 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:maxLines="1"
                 android:ems="10"
                 android:focusable="false"
                 android:hint="End Date"
@@ -138,6 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:ems="10"
+                android:maxLines="1"
                 android:hint="Venue"
                 android:inputType="textMultiLine"
                 android:textColor="@android:color/black" />

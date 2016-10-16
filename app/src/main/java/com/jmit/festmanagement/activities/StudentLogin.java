@@ -108,6 +108,8 @@ public class StudentLogin extends BaseActivity {
                 editor.putString("email", jsonObject.getString("email")).commit();
                 editor.putString("phone",jsonObject.getString("ph_no")).commit();
                 editor.putBoolean("isAdmin",jsonObject.getInt("isadmin")==1).commit();
+                if(jsonObject.getInt("isadmin")==1)
+                    editor.putString("fest_id",jsonObject.getString("fest_id")).commit();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             } else

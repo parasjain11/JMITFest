@@ -78,7 +78,6 @@ public class EventDialog extends BottomSheetDialogFragment implements VolleyInte
         progressView=(ContentLoadingProgressBar) contentView.findViewById(R.id.event_progressBar);
         emptyView=contentView.findViewById(R.id.event_nodata);
         content=(TextView)contentView.findViewById(R.id.content);
-        setProgressMode();
         HashMap<String,String> ha=new HashMap<String, String>();
         ha.put("event_id",drawerItem.getEventId());
         VolleyHelper.postRequestVolley(getActivity(),this, URL_API.GET_RESULTS,ha, RequestCodes.GET_RESULTS);
@@ -98,19 +97,6 @@ public class EventDialog extends BottomSheetDialogFragment implements VolleyInte
                 }
             });
         }
-    }
-
-    void setProgressMode() {
-        progressView.show();
-        progressView.setVisibility(VISIBLE);
-        emptyView.setVisibility(GONE);
-        content.setVisibility(GONE);
-    }
-
-    void setDataMode() {
-        progressView.hide();
-        emptyView.setVisibility(GONE);
-        content.setVisibility(VISIBLE);
     }
 
     @Override

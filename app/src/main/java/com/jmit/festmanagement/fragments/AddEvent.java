@@ -2,15 +2,20 @@ package com.jmit.festmanagement.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.jmit.festmanagement.R;
+import com.jmit.festmanagement.activities.MainActivity;
 
 import java.util.Calendar;
 
@@ -21,17 +26,38 @@ import java.util.Calendar;
 public class AddEvent extends BaseFragment {
 
     EditText etStartTime,etEndTime,etStartDate,etEndDate;
+    String fest_id;
+    String fest_name;
+    TextView fest_name_view;
+    MainActivity mainActivity;
+    SharedPreferences sharedPreferences;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) context;
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("fest_name",fest_name);
+        outState.putString("fest_id",fest_id);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_event, container, false);
+        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        fest_id=sharedPreferences.getString("fest_id",null);
 
         etStartTime=(EditText)rootView.findViewById(R.id.tfStartTime);
         etEndTime=(EditText)rootView.findViewById(R.id.tfEndTime);
         etStartDate=(EditText) rootView.findViewById(R.id.tfStartDate);
         etEndDate=(EditText) rootView.findViewById(R.id.tfEndDate);
 
+        if(mainActivity!=null)fest_name=mainActivity.getFestNameById(fest_id);
+        fest_name_view=(TextView)rootView.findViewById(R.id.festLabel);
+        fest_name_view.setText(fest_name);
 
         etStartTime.setOnClickListener(new View.OnClickListener() {
 

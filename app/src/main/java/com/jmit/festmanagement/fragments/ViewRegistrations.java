@@ -1,7 +1,9 @@
 package com.jmit.festmanagement.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,17 +13,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jmit.festmanagement.R;
 import com.jmit.festmanagement.activities.MainActivity;
-import com.jmit.festmanagement.adapters.EventAdapter;
 import com.jmit.festmanagement.adapters.RegistrationAdapter;
 import com.jmit.festmanagement.adapters.SpinnerEventAdapter;
-import com.jmit.festmanagement.adapters.SpinnerFestAdapter;
 import com.jmit.festmanagement.data.Event;
 import com.jmit.festmanagement.data.Fest;
 import com.jmit.festmanagement.data.Registration;
@@ -37,7 +37,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by arpitkh96 on 11/10/16.
@@ -45,68 +44,53 @@ import java.util.List;
 
 public class ViewRegistrations extends BaseFragment {
     EmptyRecyclerView emptyRecyclerView;
-    ArrayList<Fest> festList;
     ArrayList<Event> eventList;
     ArrayList<Registration> registrations;
     MainActivity mainActivity;
-    ArrayAdapter festdataAdapter, eventdataAdapter;
-    Spinner spinnerFest, spinnerEvent;
+    ArrayAdapter  eventdataAdapter;
+    SharedPreferences sharedPreferences;
+    Spinner spinnerEvent;
     RegistrationAdapter registrationAdapter;
-    boolean skipOnce,skipOnce2;
+    String fest_id;
+    String fest_name;
+    TextView fest_name_view;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mainActivity = (MainActivity) context;
-        festList = mainActivity.getHeaderList();
-    }
+     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_registrations, container, false);
-
+        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        fest_id=sharedPreferences.getString("fest_id",null);
         return rootView;
     }
-
     @Override
     public void onViewCreated(View rootView, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
-        skipOnce=skipOnce2=true;
-        spinnerFest = (Spinner) rootView.findViewById(R.id.spinner_fest);
         spinnerEvent = (Spinner) rootView.findViewById(R.id.spinner_event);
         registrations = new ArrayList<>();
-        if (festList == null)
-            festList = new ArrayList<>();
         eventList = new ArrayList<>();
         if (savedInstanceState != null) {
             eventList = savedInstanceState.getParcelableArrayList("eventList");
-            festList = savedInstanceState.getParcelableArrayList("festList");
             registrations = savedInstanceState.getParcelableArrayList("registrations");
+            fest_id=savedInstanceState.getString("fest_id");
+            fest_name=savedInstanceState.getString("fest_name");
         }
         initialiseList(rootView);
-
-        festdataAdapter = new SpinnerFestAdapter(getActivity(), R.layout.spinner_row, festList);
+        loadEvents(fest_id);
+        if(mainActivity!=null)fest_name=mainActivity.getFestNameById(fest_id);
+        fest_name_view=(TextView)rootView.findViewById(R.id.festLabel);
+        fest_name_view.setText(fest_name);
         eventdataAdapter = new SpinnerEventAdapter(getActivity(), R.layout.spinner_row, eventList);
-        spinnerFest.setAdapter(festdataAdapter);
         spinnerEvent.setAdapter(eventdataAdapter);
-        spinnerFest.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                loadEvents(festList.get(position).getFestId());
-                eventList = new ArrayList<Event>();
-                eventdataAdapter = new SpinnerEventAdapter(getActivity(), R.layout.spinner_row, eventList);
-                spinnerEvent.setAdapter(eventdataAdapter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         spinnerEvent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                loadRegistrations(festList.get(spinnerFest.getSelectedItemPosition()).getFestId(), eventList.get(spinnerEvent.getSelectedItemPosition()).getEventId());
+                loadRegistrations(fest_id, eventList.get(spinnerEvent.getSelectedItemPosition()).getEventId());
             }
 
             @Override
@@ -121,7 +105,8 @@ public class ViewRegistrations extends BaseFragment {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("registrations", registrations);
         outState.putParcelableArrayList("eventList", eventList);
-        outState.putParcelableArrayList("festList", festList);
+        outState.putString("fest_name",fest_name);
+        outState.putString("fest_id",fest_id);
     }
 
     void loadEvents(String fest_id) {
