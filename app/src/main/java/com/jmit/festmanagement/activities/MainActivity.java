@@ -103,8 +103,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         email = sharedPreferences.getString("email", "");
         phone = sharedPreferences.getString("phone", "");
         isAdmin = sharedPreferences.getBoolean("isAdmin", false);
-        if(isAdmin)
-        findViewById(R.id.adminPanel).setVisibility(View.VISIBLE);
+
         TextView textView = (TextView) findViewById(R.id.username);
         textView.setText(user + "(" + uid + ")");
         TextView email1 = (TextView) findViewById(R.id.email);
@@ -117,6 +116,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if(mode!=-2){
+                fillList(-2);
+            }
+            else
             super.onBackPressed();
         }
     }
@@ -161,6 +164,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 customAdapter.setHeaderList(headerList);
                 customAdapter.notifyDataSetChanged();
                 drawerRecycler.checkIfEmpty();
+                if(isAdmin)
+                    findViewById(R.id.adminPanel).setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -339,6 +344,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public void adminPanel(View v) {
         Fragment fragment=null;
+        mode=-5;
         switch (v.getId()) {
             case R.id.addEvent:
                 fragment = new AddEvent();

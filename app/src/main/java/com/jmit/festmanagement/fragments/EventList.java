@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,7 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
     MainActivity mainActivity;
     int mode;
     String fest_id;
-
+    SwipeRefreshLayout swipeRefreshLayout;
     public static EventList newInstance(int mode, String fest_id) {
         Bundle args = new Bundle();
         args.putInt("mode", mode);
@@ -88,6 +89,13 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
         initialiseList(view);
         fest_id = getArguments().getString("fest_id");
         mode = getArguments().getInt("mode");
+        swipeRefreshLayout=(SwipeRefreshLayout)view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
         view.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +126,13 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
     @Override
     public void requestStarted(int requestCode) {
         if (requestCode == RequestCodes.EVENTS || requestCode == RequestCodes.GET_REGISTRATION) {
-            eventRecycler.setTaskRunning(true);
+            if(swipeRefreshLayout.isRefreshing())
+            {
+
+            }
+            else{
+                eventRecycler.setTaskRunning(true);
+            }
         } else if (requestCode == RequestCodes.REGISTRATION || requestCode == RequestCodes.UNREGISTRATION) {
             if (mainActivity != null)
                 mainActivity.showDialog();
@@ -192,10 +206,8 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
                 jsonObject = new JSONObject(response);
                 if (jsonObject.getInt("success") == 1) {
                     String event_id = jsonObject.getString("event_id");
-                    String fest_id = jsonObject.getString("fest_id");
                     if (fest_id != null && event_id != null) {
                         Event event = new Event();
-                        event.setFest_id(fest_id);
                         event.setEventId(event_id);
                         DataHandler.addEvent(event,true);
                     }
@@ -206,7 +218,13 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
         }
 
         if (requestCode == RequestCodes.EVENTS || requestCode == RequestCodes.GET_REGISTRATION) {
-            eventRecycler.setTaskRunning(false);
+            if(swipeRefreshLayout.isRefreshing())
+            {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+            else{
+                eventRecycler.setTaskRunning(false);
+            }
         }
     }
 
@@ -214,7 +232,13 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
     public void requestEndedWithError(int requestCode, VolleyError error) {
         super.requestEndedWithError(requestCode,error);
         if (requestCode == RequestCodes.EVENTS || requestCode == RequestCodes.GET_REGISTRATION) {
-            eventRecycler.setTaskRunning(false);
+            if(swipeRefreshLayout.isRefreshing())
+            {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+            else{
+                eventRecycler.setTaskRunning(false);
+            }
         } else if (requestCode == RequestCodes.REGISTRATION || requestCode == RequestCodes.UNREGISTRATION) {
             if (mainActivity != null)
                 mainActivity.dismissDialog();
@@ -243,13 +267,11 @@ public class EventList extends BaseFragment implements  EventAdapter.OnItemClick
     public void onRegisterClick(Event event, boolean register) {
         if (register) {
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("fest_id", event.getFest_id());
             hashMap.put("event_id", event.getEventId());
             hashMap.put("user_id", user_id);
             VolleyHelper.postRequestVolley(getActivity(), this, URL_API.REGISTRATION, hashMap, RequestCodes.REGISTRATION);
         } else {
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("fest_id", event.getFest_id());
             hashMap.put("event_id", event.getEventId());
             hashMap.put("user_id", user_id);
             VolleyHelper.postRequestVolley(getActivity(), this, URL_API.UNREGISTRATION, hashMap, RequestCodes.UNREGISTRATION);

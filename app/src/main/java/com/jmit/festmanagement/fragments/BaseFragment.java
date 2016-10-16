@@ -26,7 +26,7 @@ public class BaseFragment extends Fragment implements VolleyInterface {
 
     @Override
     public void requestCompleted(int requestCode, String response) {
-
+    FLog.d("Response",response);
     }
     @Override
     public void requestEndedWithError(int requestCode, VolleyError error) {
