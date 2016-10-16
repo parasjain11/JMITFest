@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class EditEvent extends BaseFragment {
     Spinner spinnerEvent;
     ArrayList<Event> eventList;
     String event_id;
+    View rootView;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -69,7 +71,7 @@ public class EditEvent extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_event, container, false);
+        rootView = inflater.inflate(R.layout.fragment_add_event, container, false);
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
         fest_id=sharedPreferences.getString("fest_id",null);
 
@@ -259,7 +261,16 @@ public class EditEvent extends BaseFragment {
         spinnerEvent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                event_id=eventList.get(spinnerEvent.getSelectedItemPosition()).getEventId();
+                if(eventList.get(spinnerEvent.getSelectedItemPosition()).getEventId().equals("-1"))return;
+                Event  event=eventList.get(spinnerEvent.getSelectedItemPosition());
+                event_id=event.getEventId();
+                name.setText(event.getEventName());
+                venue.setText(event.getVenue());
+                etStartDate.setText(event.getStartDate());
+                etStartTime.setText(event.getStartTime());
+                etEndDate.setText(event.getEndDate());
+                etEndTime.setText(event.getEndTime());
+                desc.setText(event.getEventDesc());
             }
 
             @Override
@@ -298,10 +309,23 @@ public class EditEvent extends BaseFragment {
                         if (DataHandler.getRegistered_events().contains(event))
                             event.setRegistered(true);
                     }
+                    Event event=new Event();
+                    event.setEventId("-1");
+                    event.setEventName("Select Event");
+                    eventList.add(0,event);
                     eventdataAdapter = new SpinnerEventAdapter(getActivity(), R.layout.spinner_row, eventList);
                     spinnerEvent.setAdapter(eventdataAdapter);
 
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else if(requestCode==RequestCodes.EDIT_EVENT){
+            try {
+                JSONObject jsonObject=new JSONObject(response);
+                Snackbar.make(rootView,jsonObject.getString("message"),Snackbar.LENGTH_LONG).show();
+                if(mainActivity!=null)
+                    mainActivity.fillList(-2);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

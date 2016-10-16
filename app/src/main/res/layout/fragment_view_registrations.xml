@@ -11,45 +11,57 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:id="@+id/top_layout"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/top_layout"
                 android:layout_width="match_parent"
-                android:id="@+id/festLabel"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-smallcaps"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dip"
-                android:text="Fest:" />
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:fontFamily="sans-serif-smallcaps"
-                android:layout_marginTop="10dip"
-                android:text="Event:" />
+                <TextView
+                    android:id="@+id/festLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dip"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Fest:"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/spinner_event"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:prompt="@string/spinner_title_event" />
-        </LinearLayout>
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/top_layout"
-            layout="@layout/event_list"/>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dip"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Event:" />
+
+                <Spinner
+                    android:id="@+id/spinner_event"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/spinner_title_event" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/top_layout">
+
+                <com.jmit.festmanagement.utils.EmptyRecyclerView
+                    android:id="@+id/eventRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </com.jmit.festmanagement.utils.EmptyRecyclerView>
+
+                <include layout="@layout/empty_recycler" />
+            </FrameLayout>
         </RelativeLayout>
 
     </ScrollView>

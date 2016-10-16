@@ -279,7 +279,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
-    void fillList(int mode) {
+    public void fillList(int mode) {
 
         if (mode == -2) {
 

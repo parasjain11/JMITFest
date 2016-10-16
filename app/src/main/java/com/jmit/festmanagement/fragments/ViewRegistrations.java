@@ -82,6 +82,13 @@ public class ViewRegistrations extends BaseFragment {
         }
         initialiseList(rootView);
         loadEvents(fest_id);
+        rootView.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            loadEvents(fest_id);
+            }
+        });
+
         if(mainActivity!=null)fest_name=mainActivity.getFestNameById(fest_id);
         fest_name_view=(TextView)rootView.findViewById(R.id.festLabel);
         fest_name_view.setText(fest_name);
@@ -90,6 +97,7 @@ public class ViewRegistrations extends BaseFragment {
         spinnerEvent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!eventList.get(spinnerEvent.getSelectedItemPosition()).getEventId().equals("-1"))
                 loadRegistrations(fest_id, eventList.get(spinnerEvent.getSelectedItemPosition()).getEventId());
             }
 
@@ -171,9 +179,13 @@ public class ViewRegistrations extends BaseFragment {
                         if (DataHandler.getRegistered_events().contains(event))
                             event.setRegistered(true);
                     }
+                    Event event=new Event();
+                    event.setEventName("Select Event");
+                    event.setEventId("-1");
+                    eventList.add(0,event);
                     eventdataAdapter = new SpinnerEventAdapter(getActivity(), R.layout.spinner_row, eventList);
                     spinnerEvent.setAdapter(eventdataAdapter);
-
+                    emptyRecyclerView.setTaskRunning(false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
