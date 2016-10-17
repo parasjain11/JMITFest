@@ -23,4 +23,6 @@ public class URL_API {
     public static final String GET_RESULTS=baseUrl+"/get_result.php";
 
     public static final String EDIT_EVENT=baseUrl+"/edit_event.php";
+
+    public static final String UPLOAD_RESULTS=baseUrl+"/upload_result.php";
 }

@@ -264,7 +264,7 @@ public class AddEvent extends BaseFragment {
         try {
             JSONObject jsonObject=new JSONObject(response);
             Snackbar.make(rootView,jsonObject.getString("message"),Snackbar.LENGTH_LONG).show();
-            if(mainActivity!=null)
+            if(mainActivity!=null && jsonObject.getInt("success")==1)
                 mainActivity.fillList(-2);
         } catch (JSONException e) {
             e.printStackTrace();
