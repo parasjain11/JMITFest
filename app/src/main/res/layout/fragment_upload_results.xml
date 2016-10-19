@@ -51,15 +51,15 @@
 
             </LinearLayout>
             <ImageButton
-                android:layout_width="36dp"
+                android:layout_width="40dp"
                 android:id="@+id/add"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:padding="8dp"
-                android:foregroundTint="#666"
+                android:tint="#000"
                 android:background="@android:color/transparent"
                 android:foreground="@drawable/ripple_normal"
                 android:layout_gravity="right"
-                android:src="@drawable/add"/>
+                android:src="@drawable/ic_action_new"/>
             <Button
                 android:id="@+id/done"
                 android:layout_width="wrap_content"
